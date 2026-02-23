@@ -434,17 +434,61 @@ function updateStats(val, label, color) {
     bannerEl.style.background = color;
 }
 
-function downloadCard() {
-    const card = document.getElementById('card');
-    html2canvas(card, {
-        useCORS: true,
-        scale: 3, // Alta qualità
-        backgroundColor: null
+async function downloadCard() {
+    const el = document.getElementById('card'); // Prende la tua card
+    const btn = event.target;
+    const originalText = btn.innerText;
+    
+    btn.innerText = "ELABORAZIONE...";
+    
+    // Aspetta che i font siano caricati per evitare scritte sballate
+    await document.fonts.ready;
+
+    html2canvas(el, {
+        scale: 3,           // Alta risoluzione
+        useCORS: true,      // Permette di scaricare loghi da internet
+        backgroundColor: null,
+        onclone: (clonedDoc) => {
+            // FIX PROPORZIONI LOGHI (Metodo Serie A Out)
+            // Cerchiamo il cerchio bianco nella copia temporanea
+            const containers = clonedDoc.querySelectorAll('.logo-circle');
+            containers.forEach(c => {
+                c.style.width = '45px';
+                c.style.height = '45px';
+                c.style.display = 'flex';
+                c.style.alignItems = 'center';
+                c.style.justifyContent = 'center';
+                c.style.overflow = 'hidden';
+            });
+
+            // Forziamo il logo a restare proporzionato
+            const imgs = clonedDoc.querySelectorAll('.logo-small');
+            imgs.forEach(i => {
+                i.style.width = 'auto'; 
+                i.style.height = 'auto';
+                i.style.maxWidth = '80%'; // Non tocca i bordi del cerchio
+                i.style.maxHeight = '80%';
+                i.style.objectFit = 'contain';
+                i.style.display = 'block';
+            });
+            
+            // Fix opzionale per il logo FICUP in alto
+            const ficupLogo = clonedDoc.querySelector('.logo-ficup');
+            if(ficupLogo) {
+                ficupLogo.style.height = '30px';
+                ficupLogo.style.width = 'auto';
+            }
+        }
     }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `FantaCard_${document.getElementById('player-name').innerText}.png`;
-        link.href = canvas.toDataURL("image/png");
+        const nomeCalciatore = document.getElementById('player-name').innerText;
+        link.download = `FantaCard_${nomeCalciatore}.png`;
+        link.href = canvas.toDataURL("image/png", 1.0);
         link.click();
+        btn.innerText = originalText;
+    }).catch(err => {
+        console.error("Errore nel salvataggio:", err);
+        btn.innerText = "ERRORE";
     });
 }
 
