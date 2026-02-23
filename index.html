@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fanta Card Pro 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #FFFFFF; color: white; font-family: sans-serif; }
+        
+        /* CARD DESIGN - KEAN STYLE */
+        .card-container {
+            width: 320px;
+            height: 460px;
+            background: radial-gradient(circle at 50% 35%, #22d3ee 0%, #0ea5e9 45%, #1e40af 100%);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+        }
+
+        .event-banner {
+            position: absolute;
+            top: 30px;
+            left: -15px;
+            background: #4ade80;
+            padding: 8px 30px;
+            transform: rotate(-5deg);
+            z-index: 40;
+        }
+
+        .event-text { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.5rem; color: white; text-transform: uppercase; }
+
+        .bonus-value {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 5.5rem;
+            color: white;
+            z-index: 30;
+            line-height: 0.8;
+            letter-spacing: -4px;
+        }
+
+        .image-area {
+            position: absolute;
+            bottom: 110px;
+            width: 100%;
+            height: 60%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        .player-img { max-height: 100%; max-width: 125%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5)); }
+
+        .name-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 125px;
+            background: #001a4d;
+            z-index: 50;
+        }
+
+        .white-slant {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 85%;
+            height: 65px;
+            background: white;
+            transform: skewX(-20deg) translateX(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #player-name {
+            font-family: 'Montserrat', sans-serif;
+            color: #001a4d;
+            font-weight: 900;
+            font-size: 1.8rem;
+            font-style: italic;
+            transform: skewX(20deg);
+            text-transform: uppercase;
+        }
+
+        .team-info {
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            color: white;
+            font-weight: 900;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+     .badge-left { 
+        position: absolute; 
+        bottom: 70px; /* Alzato per allinearsi alla barra bianca del nome */
+        left: 10px;   /* Spostato vicino al bordo sinistro */
+        z-index: 60;  /* Sopra tutto */
+    }
+
+    /* Il cerchio bianco intorno al logo */
+    .logo-circle {
+        width: 45px;
+        height: 45px;
+        background: white;
+        border-radius: 50%; /* Lo rende un cerchio perfetto */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        overflow: hidden; /* Taglia l'immagine se esce dal cerchio */
+        border: 2px solid #001a4d; /* Un piccolo bordo blu per staccare dallo sfondo */
+    }
+
+    /* Il logo della squadra dentro il cerchio */
+    .logo-small { 
+        height: 80%; /* Occupa l'80% del cerchio bianco */
+        width: 80%;
+        object-fit: contain; 
+    }
+
+    /* Rimuoviamo il vecchio logo Serie A se non lo vuoi più */
+    .badge-serie-a { display: none; }
+    
+    .logo-top { 
+    position: absolute; 
+    top: 1px;      /* Distanza dal bordo superiore */
+    left: 5px;     /* Distanza dal bordo sinistro */
+    z-index: 100;   /* Sopra a tutto, anche al banner dei gol */
+}
+
+.logo-ficup { 
+    height: 30px;   /* Dimensione del logo */
+    width: auto;
+    object-fit: contain;
+    /* Opzionale: aggiunge un leggero bagliore per farlo leggere meglio */
+    filter: drop-shadow(0 2px 4px rgba(255,255,255,0.2)); 
+}
+
+/* Contenitore del logo Panini fatto in CSS */
+.panini-logo-css {
+    position: absolute;
+    top: 20px;
+    right: 15px;
+    display: none; /* Appare solo al click */
+    flex-direction: column;
+    align-items: center;
+    z-index: 60;
+    transform: rotate(2deg); /* Leggera inclinazione dinamica */
+}
+
+/* La parte superiore Gialla */
+.panini-top {
+    background: #ffcc00;
+    padding: 2px 15px;
+    border: 2px solid #000;
+    font-family: 'Arial Black', sans-serif;
+    color: #e2001a; /* Rosso Panini */
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1;
+    box-shadow: 0 4px 0px rgba(0,0,0,0.2);
+}
+
+/* La targhetta nera inferiore */
+.panini-bottom {
+    background: #000;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.55rem;
+    padding: 3px 8px;
+    text-transform: uppercase;
+    font-weight: 900;
+    margin-top: -2px; /* Unisce i due pezzi */
+    width: 100%;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+/* Stile per l'immagine che sostituisce il +3 */
+#panini-stat-img {
+    position: absolute;
+    top: 5px;       /* Regola per alzare/abbassare */
+    right: 5px;     /* Regola per spostare a destra/sinistra */
+    width: 80px;   /* Larghezza dell'immagine */
+    height: auto;
+    z-index: 100;
+    display: none;  /* Inizialmente nascosta */
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+}
+/* Sfondo Oro per Player of the Match */
+.card-gold {
+    background: radial-gradient(circle at 50% 35%, #fef3c7 0%, #fbbf24 45%, #b45309 100%) !important;
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.6) !important;
+}
+
+/* Effetto sbrilluccichio opzionale */
+.card-gold::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.3) 50%, transparent 55%);
+    background-size: 200% 200%;
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { background-position: -200% -200%; }
+    100% { background-position: 200% 200%; }
+}
+
+
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-sm mb-6">
+        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+            <h2 class="text-blue-400 font-bold mb-4 uppercase text-center tracking-tighter text-xl">Fanta Card Editor</h2>
+            <div class="relative">
+                <input type="text" id="searchInput" placeholder="Cerca calciatore..." 
+                       class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white outline-none focus:border-blue-500">
+                <div id="status-msg">Inizializzazione...</div>
+                <div id="results" class="hidden"></div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 mt-4">
+                <button onclick="updateStats('+3', 'GOOOL!', '#22c55e')" class="bg-green-600 py-2 rounded font-black text-xs">+3 (GOL)</button>
+                
+    <button onclick="activateMOTM()" class="bg-yellow-500 text-black py-2 rounded font-black text-xs col-span-3 mt-1">⭐ PLAYER OF THE MATCH</button>
+           
+                
+                <button onclick="updateStats('+6', 'DOPPIETTA', '#16a34a')" class="bg-green-700 py-2 rounded font-black text-xs">+6 (GOL)</button>
+                <button onclick="updateStats('+1', 'ASSIST', '#3b82f6')" class="bg-blue-600 py-2 rounded font-black text-xs">+1 (ASST)</button>
+                <button onclick="updateStats('+1', 'CLEAN SHEET', '#eab308')" class="bg-yellow-600 py-2 rounded font-black text-xs">P.I.</button>
+                <button onclick="updateStats('-0.5', 'AMMONITO', '#fbbf24')" class="bg-yellow-400 text-black py-2 rounded font-black text-xs">-0.5 (AMM)</button>
+                <button onclick="updateStats('-1', 'ESPULSO', '#ef4444')" class="bg-red-600 py-2 rounded font-black text-xs">-1 (ESP)</button>
+                <button onclick="updateStats('-2', 'AUTOGOL', '#7f1d1d')" class="bg-red-900 py-2 rounded font-black text-xs">-2 (AUT)</button>
+                <button onclick="downloadCard()" class="bg-blue-500 text-white py-2 rounded font-black text-xs col-span-2 uppercase italic">Salva Immagine</button>
+
+            </div>
+        </div>
+    </div>
+    
+    <div id="panini-logo" class="panini-logo-css">
+    <div class="panini-top">PANINI</div>
+    <div class="panini-bottom">PLAYER OF THE MATCH</div>
+</div>
+
+    
+    <div class="card-container" id="card">
+    <div class="logo-top">
+        <img src="https://i.ibb.co/N6bzMRw3/1770317621369.png" class="logo-ficup">
+    </div>    
+    
+    <img id="panini-stat-img" src="https://i.ibb.co/WppKtB91/Screenshot-20260223-084601-com-ebay-mobile-View-Item-Activity-1.png">
+    
+    <div id="banner-bg" class="event-banner">
+        <span id="event-label" class="event-text">GOOOL!</span>
+    </div>
+    
+    <div id="stat-val" class="bonus-value">+3</div>
+
+    <div class="image-area">
+        <img id="main-img" src="" class="player-img" style="display:none">
+        <div id="img-fallback" class="text-white/20 font-black text-3xl text-center px-4 mb-20">IMMAGINE IN ARRIVO</div>
+    </div>
+
+    <div class="name-footer">
+        <div class="badge-left">
+            <div class="logo-circle">
+                <img id="team-logo" src="" class="logo-small" style="display:none">
+            </div>
+        </div>
+        <div class="white-slant">
+            <span id="player-name">SCEGLI</span>
+        </div>
+        <span id="team-name" class="team-info">CALCIATORE</span>
+    </div>
+</div>
+
+
+    <script>
+        const SHEET_ID = '1Jc9t4NG-fF-65ijGgyFPqTkfM3UfNtIqUZVF__ILqSw';
+        const teamLogos = {
+            "Atalanta":"https://i.ibb.co/HLfTYZx7/Logo-Atalanta-Bergamo-svg.png",
+            "Bologna":"https://i.ibb.co/jkM5SPbz/Bologna-F-C-1909-logo-svg.png",
+            "Cagliari":"https://i.ibb.co/MDpds1V1/cagliari-calcio-logo-png-seeklogo-315166-3.png",
+            "Como":"https://i.ibb.co/qYhwMQzH/Logo-Como-1907-2019.png",
+            "Cremonese":"https://i.ibb.co/mCKdTQkH/Unione-Sportiva-Cremonese-logo-svg-1.png",
+            "Fiorentina":"https://i.ibb.co/4gZ5jDc5/ACF-Fiorentina-logo-Italy-2022-svg.png",
+            "Genoa":"https://i.ibb.co/Z6RcxTWw/Genoa-Cricket-and-Football-Club-logo-svg.png",
+            "Inter":"https://i.ibb.co/F4C4vHjc/FC-Internazionale-Milano-2021-svg-1.png",
+            "Juventus":"https://i.ibb.co/xtkRyBJp/Juventus-FC-2017-logo.png",
+            "Lazio":"https://i.ibb.co/840BWT8m/Stemma-della-Societ-Sportiva-Lazio-svg.png",
+            "Lecce":"https://i.ibb.co/SDQ0zy8s/US-Lecce-Stemma-svg.png",
+            "Milan":"https://i.ibb.co/B2V1c6K3/Logo-of-AC-Milan-svg.png",
+            "Napoli":"https://i.ibb.co/DgmL7YGb/SSC-Neapel-svg.png",
+            "Parma":"https://i.ibb.co/bgMLjHdf/Logo-Parma-Calcio-1913-adozione-2016-svg.png",
+            "Pisa":"https://i.ibb.co/35bNsCSV/Logo-Pisa-SC-2017-svg.png",
+            "Roma":"https://i.ibb.co/rRkxM7Bf/AS-Roma-Logo-2017-svg-1.png",
+            "Sassuolo":"https://i.ibb.co/Xrj8PYjx/Ussassuolostemma-svg.png",
+            "Torino":"https://i.ibb.co/v62Bw8qY/Torino-FC-logo-svg.png",
+            "Udinese":"https://i.ibb.co/5xhRTYmp/Logo-Udinese-Calcio-svg.png",
+            "Verona":"https://i.ibb.co/k6yWJsZf/Hellas-Verona-FC-logo-2020-svg.png"
+        };
+
+        let database = [];
+        const statusMsg = document.getElementById('status-msg');
+
+        // Caricamento JSONP (Anticors)
+        function init() {
+            const script = document.createElement('script');
+            script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:processData`;
+            document.body.appendChild(script);
+        }
+
+        window.processData = function(data) {
+            try {
+                database = data.table.rows.map(r => ({
+                    nome: r.c[0] ? String(r.c[0].v).trim() : '', 
+                    squadra: r.c[1] ? String(r.c[1].v).trim() : '', 
+                    foto: r.c[3] ? String(r.c[3].v).trim() : ''
+                })).filter(p => p.nome.length > 1);
+                
+                statusMsg.innerText = `✅ Database Online: ${database.length} Calciatori`;
+                statusMsg.style.color = "#4ade80";
+            } catch (e) {
+                statusMsg.innerText = "❌ Errore Caricamento Dati";
+            }
+        };
+
+        // Gestione Ricerca
+        const searchInput = document.getElementById('searchInput');
+        const resultsBox = document.getElementById('results');
+
+        searchInput.addEventListener('input', () => {
+            const val = searchInput.value.toLowerCase().trim();
+            resultsBox.innerHTML = '';
+            if (val.length < 2) return resultsBox.classList.add('hidden');
+
+            const matches = database.filter(p => p.nome.toLowerCase().includes(val)).slice(0, 8);
+            if (matches.length > 0) {
+                resultsBox.classList.remove('hidden');
+                matches.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'search-item';
+                    div.innerHTML = `<strong>${p.nome}</strong> <small>(${p.squadra})</small>`;
+                    div.onclick = () => {
+                        // Aggiorna Nome e Squadra
+                        const cognome = p.nome.split(' ').pop().toUpperCase();
+                        document.getElementById('player-name').innerText = cognome;
+                        document.getElementById('team-name').innerText = p.squadra;
+
+                        // Gestione Logo Squadra
+                        const tLogo = document.getElementById('team-logo');
+                        if (teamLogos[p.squadra]) {
+                            tLogo.src = teamLogos[p.squadra];
+                            tLogo.style.display = 'block';
+                        } else {
+                            tLogo.style.display = 'none';
+                        }
+
+                        // Gestione Foto
+                        const imgEl = document.getElementById('main-img');
+                        const fallback = document.getElementById('img-fallback');
+                        if(p.foto && p.foto.startsWith('http')) {
+                            imgEl.src = p.foto;
+                            imgEl.style.display = 'block';
+                            fallback.style.display = 'none';
+                        } else {
+                            imgEl.style.display = 'none';
+                            fallback.style.display = 'block';
+                        }
+                        
+                        resultsBox.classList.add('hidden');
+                        searchInput.value = '';
+                    };
+                    resultsBox.appendChild(div);
+                });
+            }
+        });
+
+        function updateStats(val, label, color) {
+            document.getElementById('stat-val').innerText = val;
+            document.getElementById('event-label').innerText = label;
+            document.getElementById('banner-bg').style.background = color;
+        }
+        
+        // Carica la libreria per trasformare HTML in immagine
+const scriptCanvas = document.createElement('script');
+scriptCanvas.src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js";
+document.head.appendChild(scriptCanvas);
+
+function activateMOTM() {
+    const card = document.getElementById('card');
+    const valEl = document.getElementById('stat-val');
+    const labelEl = document.getElementById('event-label');
+    const bannerEl = document.getElementById('banner-bg');
+    const paniniImg = document.getElementById('panini-stat-img');
+
+    valEl.style.display = 'none';
+    paniniImg.style.display = 'block';
+    labelEl.innerText = "PLAYER OF THE MATCH";
+    labelEl.style.fontSize = "0.85rem";
+    bannerEl.style.background = "#000000"; // Banner nero su sfondo oro spacca!
+    
+    card.classList.add('card-gold'); // Attiva sfondo Oro
+}
+
+function updateStats(val, label, color) {
+    const card = document.getElementById('card');
+    const valEl = document.getElementById('stat-val');
+    const labelEl = document.getElementById('event-label');
+    const bannerEl = document.getElementById('banner-bg');
+    const paniniImg = document.getElementById('panini-stat-img');
+
+    card.classList.remove('card-gold'); // Torna allo sfondo blu
+    valEl.style.display = 'block';
+    paniniImg.style.display = 'none';
+    labelEl.style.fontSize = "1.5rem";
+    valEl.innerText = val;
+    labelEl.innerText = label;
+    bannerEl.style.background = color;
+}
+
+function downloadCard() {
+    const card = document.getElementById('card');
+    html2canvas(card, {
+        useCORS: true,
+        scale: 3, // Alta qualità
+        backgroundColor: null
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `FantaCard_${document.getElementById('player-name').innerText}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
+}
+
+
+
+        init();
+    </script>
+</body>
+</html>
