@@ -80,15 +80,17 @@
             justify-content: center;
         }
 
-        #player-name {
-            font-family: 'Montserrat', sans-serif;
-            color: #001a4d;
-            font-weight: 900;
-            font-size: 1.8rem;
-            font-style: italic;
-            transform: skewX(20deg);
-            text-transform: uppercase;
-        }
+     #player-name {
+    font-family: 'Montserrat', sans-serif;
+    color: #001a4d;
+    font-weight: 900;
+    font-size: 1.8rem; /* Se il nome è lungo, puoi abbassare questo a 1.5rem */
+    font-style: italic;
+    transform: skewX(20deg);
+    text-transform: uppercase;
+    white-space: nowrap; /* Impedisce al nome di andare a capo */
+}
+
 
         .team-info {
             position: absolute;
@@ -357,35 +359,42 @@
                     div.className = 'search-item';
                     div.innerHTML = `<strong>${p.nome}</strong> <small>(${p.squadra})</small>`;
                     div.onclick = () => {
-                        // Aggiorna Nome e Squadra
-                        const cognome = p.nome.split(' ').pop().toUpperCase();
-                        document.getElementById('player-name').innerText = cognome;
-                        document.getElementById('team-name').innerText = p.squadra;
+    // PRENDE IL NOME COMPLETO E LO FA DIVENTARE TUTTO MAIUSCOLO
+    // Invece di tagliare il nome, lo usiamo tutto
+    let nomeCompleto = p.nome.toUpperCase(); 
 
-                        // Gestione Logo Squadra
-                        const tLogo = document.getElementById('team-logo');
-                        if (teamLogos[p.squadra]) {
-                            tLogo.src = teamLogos[p.squadra];
-                            tLogo.style.display = 'block';
-                        } else {
-                            tLogo.style.display = 'none';
-                        }
+    // Se vuoi comunque provare a togliere il nome di battesimo troppo lungo
+    // ma mantenere i puntati (es. K. THURAM), usa questa logica:
+    document.getElementById('player-name').innerText = nomeCompleto;
+    
+    // Aggiorna la squadra
+    document.getElementById('team-name').innerText = p.squadra;
 
-                        // Gestione Foto
-                        const imgEl = document.getElementById('main-img');
-                        const fallback = document.getElementById('img-fallback');
-                        if(p.foto && p.foto.startsWith('http')) {
-                            imgEl.src = p.foto;
-                            imgEl.style.display = 'block';
-                            fallback.style.display = 'none';
-                        } else {
-                            imgEl.style.display = 'none';
-                            fallback.style.display = 'block';
-                        }
-                        
-                        resultsBox.classList.add('hidden');
-                        searchInput.value = '';
-                    };
+    // Gestione Logo Squadra
+    const tLogo = document.getElementById('team-logo');
+    if (teamLogos[p.squadra]) {
+        tLogo.src = teamLogos[p.squadra];
+        tLogo.style.display = 'block';
+    } else {
+        tLogo.style.display = 'none';
+    }
+
+    // Gestione Foto
+    const imgEl = document.getElementById('main-img');
+    const fallback = document.getElementById('img-fallback');
+    if(p.foto && p.foto.startsWith('http')) {
+        imgEl.src = p.foto;
+        imgEl.style.display = 'block';
+        fallback.style.display = 'none';
+    } else {
+        imgEl.style.display = 'none';
+        fallback.style.display = 'block';
+    }
+    
+    resultsBox.classList.add('hidden');
+    searchInput.value = '';
+};
+
                     resultsBox.appendChild(div);
                 });
             }
