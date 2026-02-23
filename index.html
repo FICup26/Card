@@ -220,6 +220,48 @@
     0% { background-position: -200% -200%; }
     100% { background-position: 200% 200%; }
 }
+/* Sconsigliato - Rosso Intenso */
+.card-red {
+    background: radial-gradient(circle at 50% 35%, #fca5a5 0%, #ef4444 45%, #7f1d1d 100%) !important;
+}
+
+/* Consigliato - Verde Brillante */
+.card-green {
+    background: radial-gradient(circle at 50% 35%, #86efac 0%, #22c55e 45%, #14532d 100%) !important;
+}
+
+/* Clean Sheet / Segna - Blu Notte o Viola/Fucsia (Suggerito per le percentuali) */
+.card-stats {
+    background: radial-gradient(circle at 50% 35%, #c084fc 0%, #9333ea 45%, #4c1d95 100%) !important;
+}
+
+/* Rimpicciolisce il testo della percentuale se necessario */
+.percent-text {
+    font-size: 4rem !important;
+}
+/* Per OK e NO */
+.text-medium {
+    font-size: 2.5rem !important; /* Molto più piccolo del 5.5rem originale */
+    top: 25px !important;        /* Lo abbassa un po' per centrarlo nel cerchio */
+    letter-spacing: -2px !important;
+}
+/* Card OUT (Arancio) */
+.card-orange {
+    background: radial-gradient(circle at 50% 35%, #fb923c 0%, #f97316 45%, #9a3412 100%) !important;
+}
+
+
+/* Icona per Indisponibile (Croce medica) */
+.out-icon {
+    font-size: 4rem !important;
+    top: 20px !important;
+}
+
+/* Card Gol Subito (Grigio Scuro/Ferro) */
+.card-dark {
+    background: radial-gradient(circle at 50% 35%, #94a3b8 0%, #475569 45%, #1e293b 100%) !important;
+}
+
 
 
     </style>
@@ -240,6 +282,16 @@
                 <button onclick="updateStats('+3', 'GOOOL!', '#22c55e')" class="bg-green-600 py-2 rounded font-black text-xs">+3 (GOL)</button>
                 
     <button onclick="activateMOTM()" class="bg-yellow-500 text-black py-2 rounded font-black text-xs col-span-3 mt-1">⭐ PLAYER OF THE MATCH</button>
+    
+    <button onclick="updateStats('-1', 'GOL SUBITO', '#0f172a', 'card-dark')" class="bg-slate-700 text-white py-2 rounded font-black text-[10px]">-1 GOL</button>
+    <button onclick="updateStats('-2', 'GOL SUBITI', '#0f172a', 'card-dark')" class="bg-slate-700 text-white py-2 rounded font-black text-[10px]">-2 GOL</button>
+    <button onclick="updateStats('-3', 'GOL SUBITI', '#0f172a', 'card-dark')" class="bg-slate-700 text-white py-2 rounded font-black text-[10px]">-3 GOL</button>
+    <button onclick="updateStats('-4', 'GOL SUBITI', '#0f172a', 'card-dark')" class="bg-slate-800 text-white py-2 rounded font-black text-[10px]">-4 GOL</button>
+    <button onclick="updateStats('-5', 'GOL SUBITI', '#0f172a', 'card-dark')" class="bg-slate-800 text-white py-2 rounded font-black text-[10px]">-5 GOL</button>
+    <button onclick="updateStats('-6', 'GOL SUBITI', '#0f172a', 'card-dark')" class="bg-slate-800 text-white py-2 rounded font-black text-[10px]">-6 GOL</button>
+
+<button onclick="setOutStatus()" class="bg-orange-500 text-white py-2 rounded font-black text-xs">🚑 INDISPONIB.</button>
+
            
                 
                 <button onclick="updateStats('+6', 'DOPPIETTA', '#16a34a')" class="bg-green-700 py-2 rounded font-black text-xs">+6 (GOL)</button>
@@ -248,8 +300,16 @@
                 <button onclick="updateStats('-0.5', 'AMMONITO', '#fbbf24')" class="bg-yellow-400 text-black py-2 rounded font-black text-xs">-0.5 (AMM)</button>
                 <button onclick="updateStats('-1', 'ESPULSO', '#ef4444')" class="bg-red-600 py-2 rounded font-black text-xs">-1 (ESP)</button>
                 <button onclick="updateStats('-2', 'AUTOGOL', '#7f1d1d')" class="bg-red-900 py-2 rounded font-black text-xs">-2 (AUT)</button>
-                <button onclick="downloadCard()" class="bg-blue-500 text-white py-2 rounded font-black text-xs col-span-2 uppercase italic">Salva Immagine</button>
+                
+<button onclick="setCardStatus('CONSIGLIATO', 'card-green')" class="bg-green-500 text-white py-2 rounded font-black text-xs">👍 CONSIGLIATO</button>
+<button onclick="setCardStatus('SCONSIGLIATO', 'card-red')" class="bg-red-600 text-white py-2 rounded font-black text-xs">👎 SCONSIGL. </button>
 
+<button onclick="setPercentage('CLEAN SHEET')" class="bg-blue-400 text-white py-2 rounded font-black text-xs">🧤 % CLEAN SHEET</button>
+<button onclick="setPercentage('SEGNA')" class="bg-purple-500 text-white py-2 rounded font-black text-xs">⚽ % SEGNA</button>
+<button onclick="setVotoSpeciale('DISASTRO', 'card-disastro', '#000')" class="bg-purple-950 text-white py-3 rounded font-black text-xs uppercase italic">💀 DISASTRO (Voto)</button>
+    <button onclick="setVotoSpeciale('TOP PLAYER', 'card-top', '#fff')" class="bg-sky-300 text-blue-900 py-3 rounded font-black text-xs uppercase italic">💎 TOP VOTO (Voto)</button>
+
+<button onclick="downloadCard()" class="bg-blue-500 text-white py-2 rounded font-black text-xs col-span-2 uppercase italic">Salva Immagine</button>
             </div>
         </div>
     </div>
@@ -400,13 +460,9 @@
             }
         });
 
-        function updateStats(val, label, color) {
-            document.getElementById('stat-val').innerText = val;
-            document.getElementById('event-label').innerText = label;
-            document.getElementById('banner-bg').style.background = color;
-        }
         
-        // Carica la libreria per trasformare HTML in immagine
+        
+     // Carica la libreria per trasformare HTML in immagine
 const scriptCanvas = document.createElement('script');
 scriptCanvas.src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js";
 document.head.appendChild(scriptCanvas);
@@ -418,30 +474,49 @@ function activateMOTM() {
     const bannerEl = document.getElementById('banner-bg');
     const paniniImg = document.getElementById('panini-stat-img');
 
+    // Reset classi speciali prima di attivare Oro
+    card.classList.remove('card-red', 'card-green', 'card-stats');
+    valEl.classList.remove('text-medium', 'percent-text');
+
     valEl.style.display = 'none';
     paniniImg.style.display = 'block';
     labelEl.innerText = "PLAYER OF THE MATCH";
     labelEl.style.fontSize = "0.85rem";
-    bannerEl.style.background = "#000000"; // Banner nero su sfondo oro spacca!
+    bannerEl.style.background = "#000000"; 
     
-    card.classList.add('card-gold'); // Attiva sfondo Oro
+    card.classList.add('card-gold'); 
 }
 
-function updateStats(val, label, color) {
+function updateStats(val, label, color, specialCardClass = null) {
     const card = document.getElementById('card');
     const valEl = document.getElementById('stat-val');
     const labelEl = document.getElementById('event-label');
     const bannerEl = document.getElementById('banner-bg');
     const paniniImg = document.getElementById('panini-stat-img');
 
-    card.classList.remove('card-gold'); // Torna allo sfondo blu
+    // Reset totale di TUTTE le classi possibili
+    card.classList.remove('card-gold', 'card-red', 'card-green', 'card-stats', 'card-orange', 'card-dark', 'card-disastro', 'card-top');
+    valEl.classList.remove('text-medium', 'percent-text', 'out-icon');
+    
     valEl.style.display = 'block';
     paniniImg.style.display = 'none';
     labelEl.style.fontSize = "1.5rem";
+
+    // Applica classe speciale se presente
+    if(specialCardClass) card.classList.add(specialCardClass);
+
+    // Se il voto è Top, mettiamo il testo del banner nero per leggibilità
+    if(specialCardClass === 'card-top') {
+        labelEl.style.color = "#001a4d";
+    } else {
+        labelEl.style.color = "#ffffff";
+    }
+
     valEl.innerText = val;
     labelEl.innerText = label;
     bannerEl.style.background = color;
 }
+
 
 async function downloadCard() {
     const el = document.getElementById('card'); // Prende la tua card
@@ -499,6 +574,70 @@ async function downloadCard() {
         console.error("Errore nel salvataggio:", err);
         btn.innerText = "ERRORE";
     });
+}
+// Funzione per Consigliato/Sconsigliato
+function setCardStatus(label, cardClass) {
+    const card = document.getElementById('card');
+    const valEl = document.getElementById('stat-val');
+    const labelEl = document.getElementById('event-label');
+    const bannerEl = document.getElementById('banner-bg');
+    const paniniImg = document.getElementById('panini-stat-img');
+
+    // Reset totale di tutte le classi e dimensioni precedenti
+    card.classList.remove('card-gold', 'card-red', 'card-green', 'card-stats');
+    valEl.classList.remove('text-medium', 'percent-text');
+    
+    paniniImg.style.display = 'none';
+    valEl.style.display = 'block';
+
+    card.classList.add(cardClass);
+    
+    // Gestione testo e applicazione dimensione ridotta
+    if(label === 'SCONSIGLIATO') {
+        valEl.innerText = "NO";
+    } else {
+        valEl.innerText = "OK";
+    }
+    valEl.classList.add('text-medium'); // APPLICA IL FONT PICCOLO
+    
+    labelEl.innerText = label;
+    labelEl.style.fontSize = "1.5rem";
+    bannerEl.style.background = "rgba(0,0,0,0.5)"; 
+}
+
+
+// Funzione per le Percentuali (Clean Sheet / Segna)
+function setPercentage(type) {
+    const percent = prompt("Inserisci la percentuale (solo numero):", "50");
+    if (percent === null) return; // Se annulla non fa nulla
+
+    const card = document.getElementById('card');
+    const valEl = document.getElementById('stat-val');
+    const labelEl = document.getElementById('event-label');
+    const bannerEl = document.getElementById('banner-bg');
+    const paniniImg = document.getElementById('panini-stat-img');
+
+    // Reset e applica classe viola
+    card.classList.remove('card-gold', 'card-red', 'card-green');
+    card.classList.add('card-stats');
+    
+    paniniImg.style.display = 'none';
+    valEl.style.display = 'block';
+    
+    // Imposta valori
+    valEl.innerText = percent + "%";
+    valEl.classList.add('percent-text');
+    
+    labelEl.innerText = type;
+    labelEl.style.fontSize = "1.3rem";
+    bannerEl.style.background = "#000"; // Banner nero sta bene sul viola
+}
+function setVotoSpeciale(label, cardClass, bannerColor) {
+    const voto = prompt("Inserisci il voto per " + label + ":", "4");
+    if (voto === null || voto === "") return;
+    
+    // Usa la funzione updateStats che abbiamo già corretto per applicare tutto
+    updateStats(voto, label, bannerColor, cardClass);
 }
 
 
