@@ -517,6 +517,16 @@ function updateStats(val, label, color, specialCardClass = null) {
     bannerEl.style.background = color;
 }
 
+function setOutStatus() {
+    // Utilizziamo la funzione updateStats esistente per cambiare i colori
+    // Valore: ✖ (Croce), Etichetta: INDISPONIBILE, Colore Banner: Nero, Classe Card: card-orange
+    updateStats('✖', 'INDISPONIBILE', '#000', 'card-orange');
+    
+    // Aggiungiamo una classe specifica per far apparire la croce più grande e centrata
+    document.getElementById('stat-val').classList.add('out-icon');
+}
+
+
 
 async function downloadCard() {
     const el = document.getElementById('card'); // Prende la tua card
