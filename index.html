@@ -270,7 +270,32 @@
     background: radial-gradient(circle at 50% 35%, #94a3b8 0%, #475569 45%, #1e293b 100%) !important;
 }
 
+/* Card INDISPONIBILE - Solo quando attiva */
+.card-container.card-out-white {
+    background: radial-gradient(circle at 50% 35%, #ffffff 0%, #fee2e2 45%, #ef4444 100%) !important;
+}
+.card-out-white #stat-val { color: #dc2626 !important; }
 
+/* Icona Cartellino per Squalificato */
+.red-card-icon {
+    width: 48px;
+    height: 68px;
+    background: #ef4444;
+    border-radius: 4px;
+    border: 2px solid #000;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+/* Fix per S.V. e scritte grandi */
+.text-shrink { font-size: 3.5rem !important; top: 35px !important; }
+
+/* Classe per rimpicciolire i testi lunghi (% e SV) */
+.text-small-bonus {
+    font-size: 2.5rem !important;
+    top: 35px !important;
+    letter-spacing: -2px !important;
+}
 
     </style>
 </head>
@@ -298,7 +323,9 @@
     <button onclick="updateStats('-5', 'GOL SUBITI', '#0f172a', 'card-dark')" class="bg-slate-800 text-white py-2 rounded font-black text-[10px]">-5 GOL</button>
     <button onclick="updateStats('-6', 'GOL SUBITI', '#0f172a', 'card-dark')" class="bg-slate-800 text-white py-2 rounded font-black text-[10px]">-6 GOL</button>
 
-<button onclick="setOutStatus()" class="bg-orange-500 text-white py-2 rounded font-black text-xs">🚑 INDISPONIB.</button>
+<button onclick="setOutStatus()" class="bg-white text-red-600 py-2 rounded font-black text-xs border border-red-600">🚑 INDISPONIB.</button>
+<button onclick="setSqualificato()" class="bg-red-700 text-white py-2 rounded font-black text-xs">🚫 SQUALIFICATO</button>
+<button onclick="setSenzaVoto()" class="bg-slate-400 text-white py-2 rounded font-black text-xs">⚪ S.V.</button>
 
            
                 
@@ -512,43 +539,50 @@ function activateMOTM() {
 }
 
 
-function updateStats(val, label, color, specialCardClass = null) {
+function updateStats(val, label, color, specialClass = null) {
     const card = document.getElementById('card');
     const valEl = document.getElementById('stat-val');
     const labelEl = document.getElementById('event-label');
     const bannerEl = document.getElementById('banner-bg');
     const paniniImg = document.getElementById('panini-stat-img');
 
-    // Reset totale di TUTTE le classi possibili
-    card.classList.remove('card-gold', 'card-red', 'card-green', 'card-stats', 'card-orange', 'card-dark', 'card-disastro', 'card-top');
-    valEl.classList.remove('text-medium', 'percent-text', 'out-icon');
+    // 1. RESET TOTALE
+    card.className = "card-container"; 
+    if(specialClass) card.classList.add(specialClass);
     
-    valEl.style.display = 'block';
+    valEl.className = "bonus-value"; 
+    valEl.style.color = "white"; 
+    valEl.innerHTML = val; 
+    
+    // RESET DIMENSIONI (Fondamentale per pulire i residui di % o SV)
+    valEl.style.fontSize = "5.5rem"; 
+    valEl.style.top = "10px";
+    valEl.style.letterSpacing = "-4px";
+    
     paniniImg.style.display = 'none';
-    labelEl.style.fontSize = "1.5rem";
-
-    // Applica classe speciale se presente
-    if(specialCardClass) card.classList.add(specialCardClass);
-
-    // Se il voto è Top, mettiamo il testo del banner nero per leggibilità
-    if(specialCardClass === 'card-top') {
-        labelEl.style.color = "#001a4d";
-    } else {
-        labelEl.style.color = "#ffffff";
-    }
-
-    valEl.innerText = val;
+    valEl.style.display = 'block';
+    
+    // 2. APPLICA NUOVI DATI
     labelEl.innerText = label;
+    labelEl.style.fontSize = "1.5rem"; // Reset dimensione font banner
+    labelEl.style.color = (specialClass === 'card-top') ? "#001a4d" : "white";
     bannerEl.style.background = color;
 }
 
+
 function setOutStatus() {
-    // Utilizziamo la funzione updateStats esistente per cambiare i colori
-    // Valore: ✖ (Croce), Etichetta: INDISPONIBILE, Colore Banner: Nero, Classe Card: card-orange
-    updateStats('✖', 'INDISPONIBILE', '#000', 'card-orange');
-    
-    // Aggiungiamo una classe specifica per far apparire la croce più grande e centrata
+    updateStats('✖', 'INDISPONIBILE', '#000', 'card-out-white');
     document.getElementById('stat-val').classList.add('out-icon');
+}
+
+function setSqualificato() {
+    updateStats('', 'SQUALIFICATO', '#000'); // Mantiene blu base
+    document.getElementById('stat-val').innerHTML = '<div class="red-card-icon"></div>';
+}
+
+function setSenzaVoto() {
+    updateStats('S.V.', 'SENZA VOTO', '#64748b');
+    document.getElementById('stat-val').classList.add('text-small-bonus');
 }
 
 
@@ -644,7 +678,7 @@ function setCardStatus(label, cardClass) {
 // Funzione per le Percentuali (Clean Sheet / Segna)
 function setPercentage(type) {
     const percent = prompt("Inserisci la percentuale (solo numero):", "50");
-    if (percent === null) return; // Se annulla non fa nulla
+    if (percent === null || percent === "") return;
 
     const card = document.getElementById('card');
     const valEl = document.getElementById('stat-val');
@@ -652,21 +686,23 @@ function setPercentage(type) {
     const bannerEl = document.getElementById('banner-bg');
     const paniniImg = document.getElementById('panini-stat-img');
 
-    // Reset e applica classe viola
-    card.classList.remove('card-gold', 'card-red', 'card-green');
+    // Reset classi e applica sfondo viola
+    card.classList.remove('card-gold', 'card-red', 'card-green', 'card-orange', 'card-dark', 'card-out-white');
     card.classList.add('card-stats');
     
     paniniImg.style.display = 'none';
     valEl.style.display = 'block';
     
-    // Imposta valori
+    // FISSA DIMENSIONE: Qui forziamo il testo piccolo
     valEl.innerText = percent + "%";
-    valEl.classList.add('percent-text');
+    valEl.style.fontSize = "2.5rem"; // <--- FORZA DIMENSIONE PICCOLA
+    valEl.style.top = "30px";        // <--- LO ABBASSA PER NON TOCCARE IL BANNER
     
     labelEl.innerText = type;
     labelEl.style.fontSize = "1.3rem";
-    bannerEl.style.background = "#000"; // Banner nero sta bene sul viola
+    bannerEl.style.background = "#000";
 }
+
 function setVotoSpeciale(label, cardClass, bannerColor) {
     const voto = prompt("Inserisci il voto per " + label + ":", "4");
     if (voto === null || voto === "") return;
