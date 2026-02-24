@@ -67,29 +67,37 @@
             z-index: 50;
         }
 
-        .white-slant {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 85%;
-            height: 65px;
-            background: white;
-            transform: skewX(-20deg) translateX(20px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+     .white-slant {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 85%;
+    height: 65px;
+    background: white;
+    transform: skewX(-20deg) translateX(20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* FIX FONDAMENTALE */
+    overflow: hidden; 
+    padding-left: 20px; 
+}
 
-     #player-name {
+#player-name {
     font-family: 'Montserrat', sans-serif;
     color: #001a4d;
     font-weight: 900;
-    font-size: 1.8rem; /* Se il nome è lungo, puoi abbassare questo a 1.5rem */
+    font-size: 1.8rem;
     font-style: italic;
     transform: skewX(20deg);
     text-transform: uppercase;
-    white-space: nowrap; /* Impedisce al nome di andare a capo */
+    white-space: nowrap;
+    /* FIX PER NOMI LUNGHI */
+    display: block;
+    max-width: 85%; /* Impedisce al testo di toccare il bordo blu a destra */
+    text-align: center;
 }
+
 
 
         .team-info {
@@ -419,29 +427,45 @@
                     div.className = 'search-item';
                     div.innerHTML = `<strong>${p.nome}</strong> <small>(${p.squadra})</small>`;
                     div.onclick = () => {
-    // PRENDE IL NOME COMPLETO E LO FA DIVENTARE TUTTO MAIUSCOLO
-    // Invece di tagliare il nome, lo usiamo tutto
-    let nomeCompleto = p.nome.toUpperCase(); 
-
-    // Se vuoi comunque provare a togliere il nome di battesimo troppo lungo
-    // ma mantenere i puntati (es. K. THURAM), usa questa logica:
-    document.getElementById('player-name').innerText = nomeCompleto;
+    const nameEl = document.getElementById('player-name');
+    const tLogo = document.getElementById('team-logo');
+    const imgEl = document.getElementById('main-img');
+    const fallback = document.getElementById('img-fallback');
     
-    // Aggiorna la squadra
+    // 1. GESTIONE NOME E AUTO-RESIZE
+    let nomeCompleto = p.nome.toUpperCase().trim();
+    nameEl.innerText = nomeCompleto;
+
+    // Reset spaziatura per sicurezza
+    nameEl.style.letterSpacing = "0px";
+
+    // Logica di ridimensionamento migliorata per Bernardeschi
+    if (nomeCompleto.length > 16) {
+        nameEl.style.fontSize = "1.0rem"; // Nomi lunghissimi (es. Papastathopoulos)
+    } else if (nomeCompleto.length > 12) {
+        nameEl.style.fontSize = "1.25rem"; // Bernardeschi ora entra perfettamente
+    } else if (nomeCompleto.length > 9) {
+        nameEl.style.fontSize = "1.5rem";  // Nomi medi (es. Provedel)
+    } else {
+        nameEl.style.fontSize = "1.8rem";  // Nomi corti (es. Kean)
+        nameEl.style.letterSpacing = "1px"; // Un tocco di stile per i nomi corti
+    }
+
+    // 2. AGGIORNA SQUADRA (Sotto il nome)
     document.getElementById('team-name').innerText = p.squadra;
 
-    // Gestione Logo Squadra
-    const tLogo = document.getElementById('team-logo');
-    if (teamLogos[p.squadra]) {
-        tLogo.src = teamLogos[p.squadra];
+    // 3. GESTIONE LOGO SQUADRA (Case-Insensitive per Torino/Lecce)
+    const nomeSquadraFogli = p.squadra.trim();
+    const logoChiave = Object.keys(teamLogos).find(k => k.toLowerCase() === nomeSquadraFogli.toLowerCase());
+
+    if (logoChiave) {
+        tLogo.src = teamLogos[logoChiave];
         tLogo.style.display = 'block';
     } else {
         tLogo.style.display = 'none';
     }
 
-    // Gestione Foto
-    const imgEl = document.getElementById('main-img');
-    const fallback = document.getElementById('img-fallback');
+    // 4. GESTIONE FOTO
     if(p.foto && p.foto.startsWith('http')) {
         imgEl.src = p.foto;
         imgEl.style.display = 'block';
@@ -452,8 +476,9 @@
     }
     
     resultsBox.classList.add('hidden');
-    searchInput.value = '';
+    document.getElementById('searchInput').value = '';
 };
+
 
                     resultsBox.appendChild(div);
                 });
@@ -474,18 +499,18 @@ function activateMOTM() {
     const bannerEl = document.getElementById('banner-bg');
     const paniniImg = document.getElementById('panini-stat-img');
 
-    // Reset classi speciali prima di attivare Oro
-    card.classList.remove('card-red', 'card-green', 'card-stats');
-    valEl.classList.remove('text-medium', 'percent-text');
+    // Reset classi e applicazione Oro
+    card.classList.remove('card-red', 'card-green', 'card-stats', 'card-orange', 'card-dark');
+    card.classList.add('card-gold');
 
-    valEl.style.display = 'none';
-    paniniImg.style.display = 'block';
-    labelEl.innerText = "PLAYER OF THE MATCH";
-    labelEl.style.fontSize = "0.85rem";
-    bannerEl.style.background = "#000000"; 
+    valEl.style.display = 'none'; // Nasconde il +3
+    paniniImg.style.display = 'block'; // Mostra il logo Panini
     
-    card.classList.add('card-gold'); 
+    labelEl.innerText = "PLAYER OF THE MATCH";
+    labelEl.style.fontSize = "0.9rem"; // Font più piccolo per far stare la scritta nel banner
+    bannerEl.style.background = "#000000"; 
 }
+
 
 function updateStats(val, label, color, specialCardClass = null) {
     const card = document.getElementById('card');
