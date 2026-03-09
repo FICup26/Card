@@ -296,6 +296,38 @@
     top: 35px !important;
     letter-spacing: -2px !important;
 }
+/* Effetto Legend Super Metal (Oro e Bronzo) */
+.card-legend {
+    background: linear-gradient(135deg, #744d22 0%, #bf953f 25%, #fcf6ba 50%, #b38728 75%, #4e3519 100%) !important;
+    box-shadow: 0 0 40px rgba(184, 134, 11, 0.7), inset 0 0 30px rgba(0,0,0,0.3) !important;
+    border: 2px solid #fcf6ba !important;
+}
+
+/* Animazione Riflesso */
+.card-legend::after {
+    content: '';
+    position: absolute;
+    top: -100%; left: -100%; width: 300%; height: 300%;
+    background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.4) 50%, transparent 55%);
+    animation: shine-ultra 4s infinite;
+}
+
+@keyframes shine-ultra {
+    0% { transform: translate(-30%, -30%); }
+    100% { transform: translate(30%, 30%); }
+}
+
+/* Scritta Legend per il Valore */
+.legend-text-style {
+    font-size: 2.2rem !important;
+    top: 45px !important;
+    right: 10px !important;
+    letter-spacing: 1px !important;
+    color: #4e3519 !important; /* Bronzo scuro */
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+    transform: rotate(-5deg);
+}
+
 
     </style>
 </head>
@@ -343,6 +375,9 @@
 <button onclick="setPercentage('SEGNA')" class="bg-purple-500 text-white py-2 rounded font-black text-xs">⚽ % SEGNA</button>
 <button onclick="setVotoSpeciale('DISASTRO', 'card-disastro', '#000')" class="bg-purple-950 text-white py-3 rounded font-black text-xs uppercase italic">💀 DISASTRO (Voto)</button>
     <button onclick="setVotoSpeciale('TOP PLAYER', 'card-top', '#fff')" class="bg-sky-300 text-blue-900 py-3 rounded font-black text-xs uppercase italic">💎 TOP VOTO (Voto)</button>
+    
+    <button onclick="setLegend()" class="bg-gradient-to-r from-yellow-800 via-yellow-400 to-yellow-800 text-black py-2 rounded font-black text-xs col-span-3 mt-1 border border-yellow-200 shadow-inner">🏆 LEGEND MODE</button>
+
 
 <button onclick="downloadCard()" class="bg-blue-500 text-white py-2 rounded font-black text-xs col-span-2 uppercase italic">Salva Immagine</button>
             </div>
@@ -672,6 +707,70 @@ function setCardStatus(label, cardClass) {
     labelEl.innerText = label;
     labelEl.style.fontSize = "1.5rem";
     bannerEl.style.background = "rgba(0,0,0,0.5)"; 
+}
+// Funzione Fondamentale per pulire la card prima di ogni cambio
+function fullReset() {
+    const card = document.getElementById('card');
+    const valEl = document.getElementById('stat-val');
+    const labelEl = document.getElementById('event-label');
+    const bannerEl = document.getElementById('banner-bg');
+    const paniniImg = document.getElementById('panini-stat-img');
+
+    // Reset Classi
+    card.className = "card-container";
+    
+    // Reset Valore
+    valEl.style = ""; // Pulisce tutti gli stili inline (fontSize, colori, ecc)
+    valEl.className = "bonus-value";
+    valEl.style.display = "block";
+    valEl.innerHTML = "";
+
+    // Reset Banner
+    labelEl.style = "";
+    labelEl.className = "event-text";
+    
+    // Nascondi Panini se attivo
+    paniniImg.style.display = 'none';
+}
+
+function setLegend() {
+    fullReset(); // Pulisce tutto
+    const card = document.getElementById('card');
+    const valEl = document.getElementById('stat-val');
+    const labelEl = document.getElementById('event-label');
+    const bannerEl = document.getElementById('banner-bg');
+
+    card.classList.add('card-legend');
+    
+    // Inseriamo il testo LEGEND al posto del numero
+    valEl.innerText = "";
+    valEl.classList.add('legend-text-style');
+    
+    // Banner coordinato
+    labelEl.innerText = "LEGEND";
+    labelEl.style.fontSize = "1rem";
+    bannerEl.style.background = "#4e3519"; // Fondo bronzo scuro
+}
+
+// Aggiorna anche updateStats per usare il reset
+function updateStats(val, label, color, specialClass = null) {
+    fullReset();
+    const card = document.getElementById('card');
+    const valEl = document.getElementById('stat-val');
+    const labelEl = document.getElementById('event-label');
+    const bannerEl = document.getElementById('banner-bg');
+
+    if(specialClass) card.classList.add(specialClass);
+    
+    valEl.innerText = val;
+    labelEl.innerText = label;
+    bannerEl.style.background = color;
+
+    // Fix dimensioni per casi speciali
+    if(val.includes('%') || val === 'S.V.') {
+        valEl.style.fontSize = "3rem";
+        valEl.style.top = "35px";
+    }
 }
 
 
