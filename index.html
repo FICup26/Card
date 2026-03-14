@@ -603,6 +603,9 @@
 
         <button onclick="togglePredictionStyle()" class="bg-cyan-600 p-2 font-bold text-[10px] text-white">MODO PRONOSTICO</button>
         <button onclick="toggleBanner()" class="bg-white p-2 font-bold text-[10px] text-black">STRISCIA ON/OFF</button>
+        
+        <button onclick="downloadMatchCard()" class="bg-indigo-600 text-white py-2 rounded font-black text-xs col-span-2 uppercase italic mt-2">Salva Immagine Match Day</button>
+
     </div>
 </div>
 
@@ -906,6 +909,63 @@ async function downloadCard() {
         btn.innerText = "ERRORE";
     });
 }
+
+async function downloadMatchCard() {
+    const el = document.getElementById('matchCard'); 
+    const btn = event.target;
+    const originalText = btn.innerText;
+    
+    btn.innerText = "ELABORAZIONE...";
+    
+    // Aspetta il caricamento dei font Montserrat/Sans-serif
+    await document.fonts.ready;
+
+    html2canvas(el, {
+        scale: 3,           // IDENTICA QUALITÀ (Alta Risoluzione)
+        useCORS: true,      // Permette il caricamento dei loghi esterni (ibb.co)
+        backgroundColor: null,
+        onclone: (clonedDoc) => {
+            // FIX IDENTICO PER I CERCHI DEI LOGHI
+            const circles = clonedDoc.querySelectorAll('.logo-circle-match');
+            circles.forEach(c => {
+                c.style.width = '75px';
+                c.style.height = '75px';
+                c.style.display = 'flex';
+                c.style.alignItems = 'center';
+                c.style.justifyContent = 'center';
+                c.style.backgroundColor = 'white'; // Forza il bianco puro
+                c.style.borderRadius = '50%';
+                c.style.visibility = 'visible';
+            });
+
+            const logos = clonedDoc.querySelectorAll('.logo-main');
+            logos.forEach(l => {
+                l.style.width = '75%';
+                l.style.height = '75%';
+                l.style.objectFit = 'contain';
+                l.style.display = 'block';
+            });
+
+            // Assicura che la scoreboard non sparisca nel rendering
+            const sBox = clonedDoc.getElementById('scoreBox');
+            if(sBox) {
+                sBox.style.display = 'flex';
+                sBox.style.background = 'rgba(0,0,0,0.8)'; // Forza contrasto
+            }
+        }
+    }).then(canvas => {
+        const link = document.createElement('a');
+        const nomeFile = document.getElementById('outTit').innerText || "MatchDay";
+        link.download = `FantaCard_${nomeFile}.png`;
+        link.href = canvas.toDataURL("image/png", 1.0);
+        link.click();
+        btn.innerText = originalText;
+    }).catch(err => {
+        console.error("Errore salvataggio Match Card:", err);
+        btn.innerText = "ERRORE";
+    });
+}
+
 // Funzione per Consigliato/Sconsigliato
 function setCardStatus(label, cardClass) {
     const card = document.getElementById('card');
