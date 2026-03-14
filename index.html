@@ -349,45 +349,8 @@
     display: flex;
     z-index: 1;
 }
-/* Contenitore sfondi */
-.split-background {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    display: flex;
-    z-index: 1;
-    background: #000;
-}
-
-/* Lato Casa con Taglio a Fulmine/Zig-Zag */
-#bgH {
-    flex: 1.2; /* Leggermente più largo per gestire le punte */
-    position: relative;
-    z-index: 2;
-    /* Crea 3 punte a zig-zag */
-    clip-path: polygon(0% 0%, 100% 0%, 85% 33%, 100% 66%, 85% 100%, 0% 100%);
-    box-shadow: inset -20px 0 50px rgba(0,0,0,0.5);
-}
-
-/* Effetto Luce sul bordo dello Zig-Zag */
-#bgH::after {
-    content: "";
-    position: absolute;
-    top: 0; right: 0;
-    width: 100%; height: 100%;
-    /* Segue esattamente la sagoma del clip-path sopra */
-    clip-path: polygon(100% 0%, 98% 0%, 83% 33%, 98% 66%, 83% 100%, 85% 100%, 100% 66%, 85% 33%);
-    background: rgba(255, 255, 255, 0.5);
-    filter: blur(2px);
-    pointer-events: none;
-}
-
-/* Lato Trasferta (si incastra sotto) */
-#bgA {
-    flex: 1;
-    margin-left: -20%; /* Fondamentale per far sparire il nero sotto le punte */
-    z-index: 1;
-}
-
+.side-home { flex: 1; border-right: 1px solid rgba(255,255,255,0.2); transition: 0.3s; }
+.side-away { flex: 1; transition: 0.3s; }
 
 /* Scoreboard Centrale Orizzontale */
 .scoreboard-center {
@@ -1000,23 +963,26 @@ async function downloadCard() {
 }
 
 async function downloadMatchCard() {
-    const el = document.getElementById('matchCard'); 
+    const el = document.getElementById('matchCard'); // Prende la Match Card
     const btn = event.target;
     const originalText = btn.innerText;
     
     btn.innerText = "ELABORAZIONE...";
     
+    // Aspetta che i font siano caricati
     await document.fonts.ready;
 
     html2canvas(el, {
-        scale: 3,           
-        useCORS: true,      
+        scale: 3,           // Alta risoluzione identica
+        useCORS: true,      // Permette i loghi da internet
         backgroundColor: null,
         onclone: (clonedDoc) => {
-            // 1. Sistemiamo i cerchi bianchi
+            // FIX PROPORZIONI LOGHI MATCH CARD (Logica identica alla prima card)
+            
+            // 1. Sistemiamo i cerchi bianchi (logo-circle-match)
             const containers = clonedDoc.querySelectorAll('.logo-circle-match');
             containers.forEach(c => {
-                c.style.width = '75px';    
+                c.style.width = '75px';    // Dimensione fissa per il download
                 c.style.height = '75px';
                 c.style.display = 'flex';
                 c.style.alignItems = 'center';
@@ -1027,18 +993,18 @@ async function downloadMatchCard() {
                 c.style.margin = '0 auto';
             });
 
-            // 2. Forziamo i loghi delle squadre
+            // 2. Forziamo i loghi delle squadre a restare proporzionati (logo-main)
             const imgs = clonedDoc.querySelectorAll('.logo-main');
             imgs.forEach(i => {
                 i.style.width = 'auto'; 
                 i.style.height = 'auto';
-                i.style.maxWidth = '75%';  
+                i.style.maxWidth = '75%';  // Occupa il 75% del cerchio bianco
                 i.style.maxHeight = '75%';
                 i.style.objectFit = 'contain';
                 i.style.display = 'block';
             });
             
-            // 3. Fix per il logo FICUP
+            // 3. Fix per il logo FICUP centrale alto
             const ficupLogoTop = clonedDoc.querySelector('.ficup-logo-top img');
             if(ficupLogoTop) {
                 ficupLogoTop.style.height = '35px';
@@ -1052,34 +1018,6 @@ async function downloadMatchCard() {
             if(scoreBox) {
                 scoreBox.style.display = 'flex';
                 scoreBox.style.alignItems = 'center';
-            }
-
-                // --- FIX DEFINITIVO ZIG-ZAG PER DOWNLOAD ---
-            const bgH = clonedDoc.getElementById('bgH');
-            const bgA = clonedDoc.getElementById('bgA');
-
-            if(bgH && bgA) {
-                // Forza il posizionamento assoluto nel clone per html2canvas
-                bgH.style.position = 'absolute';
-                bgH.style.left = '0';
-                bgH.style.top = '0';
-                bgH.style.width = '65%'; // Copre più della metà per gestire le punte
-                bgH.style.height = '100%';
-                bgH.style.zIndex = '2';
-                
-                // Riapplica il taglio a zig-zag
-                const zigZagPath = 'polygon(0% 0%, 100% 0%, 85% 33%, 100% 66%, 85% 100%, 0% 100%)';
-                bgH.style.clipPath = zigZagPath;
-                bgH.style.webkitClipPath = zigZagPath;
-
-                // Forza il secondo colore a stare sotto e riempire i vuoti
-                bgA.style.position = 'absolute';
-                bgA.style.right = '0';
-                bgA.style.top = '0';
-                bgA.style.width = '55%'; // Si sovrappone sotto bgH
-                bgA.style.height = '100%';
-                bgA.style.margin = '0';   // Resetta margini che potrebbero sballare il render
-                bgA.style.zIndex = '1';
             }
         }
     }).then(canvas => {
@@ -1344,7 +1282,6 @@ window.toggleBanner = function() {
     }
 };
 
-// 5. INIZIALIZZAZIONE SQUADRE NEI SELETTORI
 // Funzione Unificata di Avvio
 function avvioGlobale() {
     // 1. Carica Database Calciatori (Anticors)
