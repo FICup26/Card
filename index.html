@@ -1054,14 +1054,32 @@ async function downloadMatchCard() {
                 scoreBox.style.alignItems = 'center';
             }
 
-            // --- NUOVO PUNTO 5: FIX ZIG-ZAG PER DOWNLOAD ---
+                // --- FIX DEFINITIVO ZIG-ZAG PER DOWNLOAD ---
             const bgH = clonedDoc.getElementById('bgH');
-            if(bgH) {
-                bgH.style.clipPath = 'polygon(0% 0%, 100% 0%, 85% 33%, 100% 66%, 85% 100%, 0% 100%)';
-                bgH.style.webkitClipPath = 'polygon(0% 0%, 100% 0%, 85% 33%, 100% 66%, 85% 100%, 0% 100%)';
-                // Assicuriamoci che il margine negativo del secondo colore sia applicato
-                const bgA = clonedDoc.getElementById('bgA');
-                if(bgA) bgA.style.marginLeft = '-20%';
+            const bgA = clonedDoc.getElementById('bgA');
+
+            if(bgH && bgA) {
+                // Forza il posizionamento assoluto nel clone per html2canvas
+                bgH.style.position = 'absolute';
+                bgH.style.left = '0';
+                bgH.style.top = '0';
+                bgH.style.width = '65%'; // Copre più della metà per gestire le punte
+                bgH.style.height = '100%';
+                bgH.style.zIndex = '2';
+                
+                // Riapplica il taglio a zig-zag
+                const zigZagPath = 'polygon(0% 0%, 100% 0%, 85% 33%, 100% 66%, 85% 100%, 0% 100%)';
+                bgH.style.clipPath = zigZagPath;
+                bgH.style.webkitClipPath = zigZagPath;
+
+                // Forza il secondo colore a stare sotto e riempire i vuoti
+                bgA.style.position = 'absolute';
+                bgA.style.right = '0';
+                bgA.style.top = '0';
+                bgA.style.width = '55%'; // Si sovrappone sotto bgH
+                bgA.style.height = '100%';
+                bgA.style.margin = '0';   // Resetta margini che potrebbero sballare il render
+                bgA.style.zIndex = '1';
             }
         }
     }).then(canvas => {
@@ -1327,7 +1345,14 @@ window.toggleBanner = function() {
 };
 
 // 5. INIZIALIZZAZIONE SQUADRE NEI SELETTORI
-function init() {
+// Funzione Unificata di Avvio
+function avvioGlobale() {
+    // 1. Carica Database Calciatori (Anticors)
+    const script = document.createElement('script');
+    script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:processData`;
+    document.body.appendChild(script);
+
+    // 2. Popola selettori squadre Match Day
     const sH = document.getElementById('selH');
     const sA = document.getElementById('selA');
     
@@ -1341,8 +1366,9 @@ function init() {
     }
 }
 
-// Avvia tutto al caricamento della pagina
-window.onload = init;
+// Lancia tutto al caricamento della pagina
+window.onload = avvioGlobale;
+
 
 
 
