@@ -328,6 +328,166 @@
     transform: rotate(-5deg);
 }
 
+/* Card Base 320x460 */
+.match-card-seriea {
+    width: 320px;
+    height: 460px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    background: #111;
+}
+
+/* Sfondo Diviso Netto */
+.split-background {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    z-index: 1;
+}
+.side-home { flex: 1; border-right: 1px solid rgba(255,255,255,0.2); transition: 0.3s; }
+.side-away { flex: 1; transition: 0.3s; }
+
+/* Scoreboard Centrale Orizzontale */
+.scoreboard-center {
+    position: relative;
+    z-index: 10;
+    margin-top: auto;
+    margin-bottom: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    padding: 30px 0;
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
+}
+
+.team-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+}
+
+.logo-main {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+}
+
+.score-number {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 4.5rem;
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+}
+
+/* Fascia Testi Bianca (Removibile) */
+.strip-info-white {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    background: white;
+    padding: 10px 0;
+    text-align: center;
+    z-index: 20;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    display: none; /* Attivabile da pulsante */
+}
+
+.strip-info-white span {
+    color: #001a4d;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+/* Stacco superiore per la console */
+.console-container {
+    margin-top: 50px;
+    margin-bottom: 40px;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+/* Logo FICUP - Forza la visibilità */
+.ficup-logo-top {
+    position: absolute;
+    top: 15px;
+    width: 100%;
+    text-align: center;
+    z-index: 99; /* Massimo livello */
+}
+
+/* Titoli Match Day */
+.header-titles {
+    position: absolute;
+    top: 70px;
+    width: 100%;
+    text-align: center;
+    z-index: 20;
+}
+
+.title-main {
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 1.9rem;
+    text-transform: uppercase;
+    display: block;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+.title-sub {
+    color: rgba(255,255,255,0.9);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.rem;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+}
+/* Cerchio Bianco Sotto i Loghi */
+.logo-circle-match {
+    width: 75px;          /* Dimensione del cerchio */
+    height: 75px;
+    background: white;    /* Colore bianco */
+    border-radius: 50%;   /* Lo rende tondo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Ombra per profondità */
+    margin: 0 auto;
+}
+
+/* Logo dentro il cerchio */
+.logo-main {
+    width: 75%;           /* Il logo occupa il 75% del cerchio bianco */
+    height: 75%;
+    object-fit: contain;
+}
+.scoreboard-center {
+    background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(20,20,20,0.6) 100%);
+    backdrop-filter: blur(15px);
+    border-top: 1px solid rgba(255,255,255,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    /* Taglio leggermente obliquo alle estremità */
+    clip-path: polygon(0% 10%, 100% 0%, 100% 90%, 0% 100%);
+}
+
+
 
     </style>
 </head>
@@ -421,6 +581,73 @@
     </div>
 </div>
 
+<div class="console-container w-full max-w-sm mx-auto">
+    <div class="grid grid-cols-2 gap-2">
+        <input type="text" id="inTit" oninput="updateMatch()" placeholder="MATCH DAY" class="bg-slate-900 text-white p-2 text-xs">
+        <input type="text" id="inSub" oninput="updateMatch()" placeholder="GIORNATA 29" class="bg-slate-900 text-white p-2 text-xs">
+        
+        <select id="selH" onchange="updateMatch()" class="bg-slate-900 text-white p-2 text-xs"></select>
+        <select id="selA" onchange="updateMatch()" class="bg-slate-900 text-white p-2 text-xs"></select>
+        
+        <div id="inputGara" class="col-span-2 grid grid-cols-2 gap-2">
+            <input type="text" id="scH" oninput="updateMatch()" placeholder="Gol" class="bg-slate-900 text-white p-2 text-center">
+            <input type="text" id="scA" oninput="updateMatch()" placeholder="Gol" class="bg-slate-900 text-white p-2 text-center">
+        </div>
+
+        <div id="inputPred" class="col-span-2 hidden">
+            <input type="text" id="singlePred" oninput="updateMatch()" placeholder="Pronostico (es. 1X)" class="w-full bg-cyan-900 text-white p-2 text-center">
+        </div>
+        
+        <input type="text" id="inBanner" oninput="updateMatch()" placeholder="Testo Striscia (es. FINAL RESULT)" class="col-span-2 bg-slate-900 text-white p-2 text-xs border border-slate-700">
+
+
+        <button onclick="togglePredictionStyle()" class="bg-cyan-600 p-2 font-bold text-[10px] text-white">MODO PRONOSTICO</button>
+        <button onclick="toggleBanner()" class="bg-white p-2 font-bold text-[10px] text-black">STRISCIA ON/OFF</button>
+    </div>
+</div>
+
+<div class="match-card-seriea" id="matchCard">
+    <div class="split-background">
+        <div id="bgH" style="flex:1;"></div>
+        <div id="bgA" style="flex:1;"></div>
+    </div>
+
+    <div class="ficup-logo-top">
+        <img src="https://i.ibb.co/N6bzMRw3/1770317621369.png" style="height:35px; margin:0 auto;">
+    </div>
+
+    <div class="header-titles">
+        <span id="outTit" class="title-main">MATCH DAY</span>
+        <span id="outSub" class="title-sub">GIORNATA 00</span>
+    </div>
+
+    <div class="scoreboard-center" id="scoreBox">
+    <div style="width:30%; display:flex; justify-content:center;">
+        <div class="logo-circle-match">
+            <img id="imgH" src="" class="logo-main">
+        </div>
+    </div>
+
+    <div style="width:40%; text-align:center;">
+        <div id="pLabel" style="color:#00f2ff; font-size:0.55rem; font-weight:900; display:none; margin-bottom:2px; text-transform:uppercase;">
+            Pronostico Consigliato
+        </div>
+        <div id="scoreVal" style="font-family:'Montserrat'; font-size:3.5rem; font-weight:900; color:white;">
+            <span id="valH">0</span><span id="sep">-</span><span id="valA">0</span>
+        </div>
+    </div>
+
+    <div style="width:30%; display:flex; justify-content:center;">
+        <div class="logo-circle-match">
+            <img id="imgA" src="" class="logo-main">
+        </div>
+    </div>
+</div>
+
+    <div id="bannerInfo" class="strip-info-white">
+        <span id="txtDisplay">FINAL RESULT</span>
+    </div>
+</div>
 
     <script>
         const SHEET_ID = '1Jc9t4NG-fF-65ijGgyFPqTkfM3UfNtIqUZVF__ILqSw';
@@ -809,6 +1036,109 @@ function setVotoSpeciale(label, cardClass, bannerColor) {
     // Usa la funzione updateStats che abbiamo già corretto per applicare tutto
     updateStats(voto, label, bannerColor, cardClass);
 }
+
+// 1. DATABASE COLORI SQUADRE
+const teamColorsMatch = {
+    "Atalanta": "#005CA9", "Bologna": "#9E1B32", "Cagliari": "#A50034", "Como": "#0054A6",
+    "Cremonese": "#D50032", "Fiorentina": "#5B2C83", "Genoa": "#C4122E", "Inter": "#0068A8",
+    "Juventus": "#000000", "Lazio": "#87CEEB", "Lecce": "#FFD200", "Milan": "#FB090B",
+    "Napoli": "#0081C8", "Parma": "#FFD100", "Pisa": "#0054A6", "Roma": "#8E1F2F",
+    "Sassuolo": "#00A651", "Torino": "#800000", "Udinese": "#000000", "Verona": "#0033A0"
+};
+
+// 2. FUNZIONE PRINCIPALE DI AGGIORNAMENTO
+window.updateMatch = function() {
+    const scoreBox = document.getElementById('scoreBox');
+    if (!scoreBox) return;
+
+    // Rileva se siamo in modalità Pronostico
+    const isPred = scoreBox.classList.contains('is-prediction');
+    
+    // Riferimenti Input
+    const h = document.getElementById('selH').value;
+    const a = document.getElementById('selA').value;
+    const inputTitolo = document.getElementById('inTit').value;
+    const inputSottotitolo = document.getElementById('inSub').value;
+    const inputBanner = document.getElementById('inBanner'); // Campo per la striscia bianca
+
+    // AGGIORNAMENTO TITOLI (Sopra la card)
+    document.getElementById('outTit').innerText = inputTitolo || "MATCH DAY";
+    document.getElementById('outSub').innerText = inputSottotitolo || "GIORNATA 00";
+
+    // AGGIORNAMENTO TESTO STRISCIA BIANCA
+    const outBanner = document.getElementById('txtDisplay');
+    if (inputBanner && outBanner) {
+        outBanner.innerText = inputBanner.value || "FINAL RESULT";
+    }
+
+    // AGGIORNAMENTO COLORI E LOGHI
+    if(h && teamColorsMatch[h]) {
+        document.getElementById('bgH').style.backgroundColor = teamColorsMatch[h];
+        document.getElementById('imgH').src = teamLogos[h];
+    }
+    if(a && teamColorsMatch[a]) {
+        document.getElementById('bgA').style.backgroundColor = teamColorsMatch[a];
+        document.getElementById('imgA').src = teamLogos[a];
+    }
+
+    // VISIBILITÀ LABEL "PRONOSTICO CONSIGLIATO"
+    const pLabel = document.getElementById('pLabel');
+    if (pLabel) pLabel.style.display = isPred ? "block" : "none";
+
+    // GESTIONE PUNTEGGI O PRONOSTICO
+    if(isPred) {
+        // Modalità Pronostico
+        document.getElementById('valH').innerText = document.getElementById('singlePred').value || "1X";
+        document.getElementById('valA').style.display = "none";
+        document.getElementById('sep').style.display = "none";
+    } else {
+        // Modalità Risultato Reale
+        document.getElementById('valH').innerText = document.getElementById('scH').value || "0";
+        document.getElementById('valA').innerText = document.getElementById('scA').value || "0";
+        document.getElementById('valA').style.display = "inline";
+        document.getElementById('sep').style.display = "inline";
+    }
+};
+
+// 3. FUNZIONE PER ATTIVARE/DISATTIVARE PRONOSTICO
+window.togglePredictionStyle = function() {
+    const sb = document.getElementById('scoreBox');
+    const ig = document.getElementById('inputGara');
+    const ip = document.getElementById('inputPred');
+    
+    if(sb && ig && ip) {
+        sb.classList.toggle('is-prediction');
+        ig.classList.toggle('hidden');
+        ip.classList.toggle('hidden');
+        updateMatch(); // Riesegue l'update per sistemare i testi
+    }
+};
+
+// 4. FUNZIONE PER MOSTRARE/NASCONDERE LA STRISCIA
+window.toggleBanner = function() {
+    const b = document.getElementById('bannerInfo');
+    if(b) {
+        b.style.display = (b.style.display === 'block' || b.style.display === '') ? 'none' : 'block';
+    }
+};
+
+// 5. INIZIALIZZAZIONE SQUADRE NEI SELETTORI
+function init() {
+    const sH = document.getElementById('selH');
+    const sA = document.getElementById('selA');
+    
+    if(sH && sA && typeof teamLogos !== 'undefined') {
+        sH.innerHTML = '<option value="">CASA</option>';
+        sA.innerHTML = '<option value="">TRASFERTA</option>';
+        Object.keys(teamLogos).sort().forEach(t => {
+            sH.add(new Option(t, t));
+            sA.add(new Option(t, t));
+        });
+    }
+}
+
+// Avvia tutto al caricamento della pagina
+window.onload = init;
 
 
 
