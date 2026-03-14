@@ -911,57 +911,73 @@ async function downloadCard() {
 }
 
 async function downloadMatchCard() {
-    const el = document.getElementById('matchCard'); 
+    const el = document.getElementById('matchCard'); // Prende la Match Card
     const btn = event.target;
     const originalText = btn.innerText;
     
     btn.innerText = "ELABORAZIONE...";
     
-    // Aspetta il caricamento dei font Montserrat/Sans-serif
+    // Aspetta che i font siano caricati
     await document.fonts.ready;
 
     html2canvas(el, {
-        scale: 3,           // IDENTICA QUALITÀ (Alta Risoluzione)
-        useCORS: true,      // Permette il caricamento dei loghi esterni (ibb.co)
+        scale: 3,           // Alta risoluzione identica
+        useCORS: true,      // Permette i loghi da internet
         backgroundColor: null,
         onclone: (clonedDoc) => {
-            // FIX IDENTICO PER I CERCHI DEI LOGHI
-            const circles = clonedDoc.querySelectorAll('.logo-circle-match');
-            circles.forEach(c => {
-                c.style.width = '75px';
+            // FIX PROPORZIONI LOGHI MATCH CARD (Logica identica alla prima card)
+            
+            // 1. Sistemiamo i cerchi bianchi (logo-circle-match)
+            const containers = clonedDoc.querySelectorAll('.logo-circle-match');
+            containers.forEach(c => {
+                c.style.width = '75px';    // Dimensione fissa per il download
                 c.style.height = '75px';
                 c.style.display = 'flex';
                 c.style.alignItems = 'center';
                 c.style.justifyContent = 'center';
-                c.style.backgroundColor = 'white'; // Forza il bianco puro
+                c.style.backgroundColor = 'white';
                 c.style.borderRadius = '50%';
-                c.style.visibility = 'visible';
+                c.style.overflow = 'hidden';
+                c.style.margin = '0 auto';
             });
 
-            const logos = clonedDoc.querySelectorAll('.logo-main');
-            logos.forEach(l => {
-                l.style.width = '75%';
-                l.style.height = '75%';
-                l.style.objectFit = 'contain';
-                l.style.display = 'block';
+            // 2. Forziamo i loghi delle squadre a restare proporzionati (logo-main)
+            const imgs = clonedDoc.querySelectorAll('.logo-main');
+            imgs.forEach(i => {
+                i.style.width = 'auto'; 
+                i.style.height = 'auto';
+                i.style.maxWidth = '75%';  // Occupa il 75% del cerchio bianco
+                i.style.maxHeight = '75%';
+                i.style.objectFit = 'contain';
+                i.style.display = 'block';
             });
+            
+            // 3. Fix per il logo FICUP centrale alto
+            const ficupLogoTop = clonedDoc.querySelector('.ficup-logo-top img');
+            if(ficupLogoTop) {
+                ficupLogoTop.style.height = '35px';
+                ficupLogoTop.style.width = 'auto';
+                ficupLogoTop.style.margin = '0 auto';
+                ficupLogoTop.style.display = 'block';
+            }
 
-            // Assicura che la scoreboard non sparisca nel rendering
-            const sBox = clonedDoc.getElementById('scoreBox');
-            if(sBox) {
-                sBox.style.display = 'flex';
-                sBox.style.background = 'rgba(0,0,0,0.8)'; // Forza contrasto
+            // 4. Assicuriamoci che la scoreboard sia visibile
+            const scoreBox = clonedDoc.getElementById('scoreBox');
+            if(scoreBox) {
+                scoreBox.style.display = 'flex';
+                scoreBox.style.alignItems = 'center';
             }
         }
     }).then(canvas => {
         const link = document.createElement('a');
-        const nomeFile = document.getElementById('outTit').innerText || "MatchDay";
-        link.download = `FantaCard_${nomeFile}.png`;
+        const tit = document.getElementById('outTit').innerText;
+        const sub = document.getElementById('outSub').innerText;
+        link.download = `MatchDay_${tit}_${sub}.png`;
         link.href = canvas.toDataURL("image/png", 1.0);
         link.click();
         btn.innerText = originalText;
     }).catch(err => {
-        console.error("Errore salvataggio Match Card:", err);
+        console.error("Errore nel salvataggio Match Card:", err);
         btn.innerText = "ERRORE";
     });
 }
