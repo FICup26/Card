@@ -349,8 +349,45 @@
     display: flex;
     z-index: 1;
 }
-.side-home { flex: 1; border-right: 1px solid rgba(255,255,255,0.2); transition: 0.3s; }
-.side-away { flex: 1; transition: 0.3s; }
+/* Contenitore sfondi */
+.split-background {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    z-index: 1;
+    background: #000;
+}
+
+/* Lato Casa con Taglio a Fulmine/Zig-Zag */
+#bgH {
+    flex: 1.2; /* Leggermente più largo per gestire le punte */
+    position: relative;
+    z-index: 2;
+    /* Crea 3 punte a zig-zag */
+    clip-path: polygon(0% 0%, 100% 0%, 85% 33%, 100% 66%, 85% 100%, 0% 100%);
+    box-shadow: inset -20px 0 50px rgba(0,0,0,0.5);
+}
+
+/* Effetto Luce sul bordo dello Zig-Zag */
+#bgH::after {
+    content: "";
+    position: absolute;
+    top: 0; right: 0;
+    width: 100%; height: 100%;
+    /* Segue esattamente la sagoma del clip-path sopra */
+    clip-path: polygon(100% 0%, 98% 0%, 83% 33%, 98% 66%, 83% 100%, 85% 100%, 100% 66%, 85% 33%);
+    background: rgba(255, 255, 255, 0.5);
+    filter: blur(2px);
+    pointer-events: none;
+}
+
+/* Lato Trasferta (si incastra sotto) */
+#bgA {
+    flex: 1;
+    margin-left: -20%; /* Fondamentale per far sparire il nero sotto le punte */
+    z-index: 1;
+}
+
 
 /* Scoreboard Centrale Orizzontale */
 .scoreboard-center {
@@ -392,17 +429,30 @@
     line-height: 1;
 }
 
-/* Fascia Testi Bianca (Removibile) */
+/* Fascia Testi Premium (Stile Sky Sport) */
 .strip-info-white {
     position: absolute;
-    bottom: 30px;
-    width: 100%;
+    bottom: 35px;
+    width: 110%; /* Più larga per uscire dai bordi */
+    left: -5%;   /* Centrata rispetto alla larghezza 110% */
     background: white;
-    padding: 10px 0;
+    padding: 12px 0;
     text-align: center;
     z-index: 20;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    
+    /* Taglio obliquo moderno */
+    transform: rotate(-2deg); 
     display: none; /* Attivabile da pulsante */
+    border-top: 4px solid #00f2ff; /* Linea di accento azzurro neon */
+}
+
+/* Sottostriscia per creare profondità */
+.strip-info-white::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
 }
 
 .strip-info-white span {
@@ -410,9 +460,13 @@
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
     text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    display: block;
+    transform: rotate(2deg); /* Raddrizza il testo rispetto alla striscia storta */
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
 }
+
 /* Stacco superiore per la console */
 .console-container {
     margin-top: 50px;
@@ -460,16 +514,22 @@
 }
 /* Cerchio Bianco Sotto i Loghi */
 .logo-circle-match {
-    width: 75px;          /* Dimensione del cerchio */
-    height: 75px;
-    background: white;    /* Colore bianco */
-    border-radius: 50%;   /* Lo rende tondo */
+    width: 80px;
+    height: 80px;
+    background: #fff;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Ombra per profondità */
+    /* Doppio bordo: uno scuro e uno di luce */
+    border: 3px solid rgba(255,255,255,0.2);
+    outline: 2px solid rgba(0,0,0,0.3);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.1);
     margin: 0 auto;
+    position: relative;
+    z-index: 5;
 }
+
 
 /* Logo dentro il cerchio */
 .logo-main {
@@ -477,6 +537,14 @@
     height: 75%;
     object-fit: contain;
 }
+.logo-main {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    /* Effetto profondità logo */
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
 .scoreboard-center {
     background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(20,20,20,0.6) 100%);
     backdrop-filter: blur(15px);
@@ -487,6 +555,25 @@
     clip-path: polygon(0% 10%, 100% 0%, 100% 90%, 0% 100%);
 }
 
+/6 Effetto grana/texture sopra i colori */
+.split-background div {
+    position: relative;
+    overflow: hidden;
+}
+
+.split-background div::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    opacity: 0.15; /* Leggerissima texture fibra di carbonio */
+    pointer-events: none;
+}
+
+/* Sfumatura interna per dare volume */
+.side-home, .side-away {
+    box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+}
 
 
     </style>
@@ -647,10 +734,12 @@
     </div>
 </div>
 
-    <div id="bannerInfo" class="strip-info-white">
+  <div id="bannerInfo" class="strip-info-white">
+    <div style="position: relative;">
         <span id="txtDisplay">FINAL RESULT</span>
     </div>
 </div>
+
 
     <script>
         const SHEET_ID = '1Jc9t4NG-fF-65ijGgyFPqTkfM3UfNtIqUZVF__ILqSw';
@@ -911,26 +1000,23 @@ async function downloadCard() {
 }
 
 async function downloadMatchCard() {
-    const el = document.getElementById('matchCard'); // Prende la Match Card
+    const el = document.getElementById('matchCard'); 
     const btn = event.target;
     const originalText = btn.innerText;
     
     btn.innerText = "ELABORAZIONE...";
     
-    // Aspetta che i font siano caricati
     await document.fonts.ready;
 
     html2canvas(el, {
-        scale: 3,           // Alta risoluzione identica
-        useCORS: true,      // Permette i loghi da internet
+        scale: 3,           
+        useCORS: true,      
         backgroundColor: null,
         onclone: (clonedDoc) => {
-            // FIX PROPORZIONI LOGHI MATCH CARD (Logica identica alla prima card)
-            
-            // 1. Sistemiamo i cerchi bianchi (logo-circle-match)
+            // 1. Sistemiamo i cerchi bianchi
             const containers = clonedDoc.querySelectorAll('.logo-circle-match');
             containers.forEach(c => {
-                c.style.width = '75px';    // Dimensione fissa per il download
+                c.style.width = '75px';    
                 c.style.height = '75px';
                 c.style.display = 'flex';
                 c.style.alignItems = 'center';
@@ -941,18 +1027,18 @@ async function downloadMatchCard() {
                 c.style.margin = '0 auto';
             });
 
-            // 2. Forziamo i loghi delle squadre a restare proporzionati (logo-main)
+            // 2. Forziamo i loghi delle squadre
             const imgs = clonedDoc.querySelectorAll('.logo-main');
             imgs.forEach(i => {
                 i.style.width = 'auto'; 
                 i.style.height = 'auto';
-                i.style.maxWidth = '75%';  // Occupa il 75% del cerchio bianco
+                i.style.maxWidth = '75%';  
                 i.style.maxHeight = '75%';
                 i.style.objectFit = 'contain';
                 i.style.display = 'block';
             });
             
-            // 3. Fix per il logo FICUP centrale alto
+            // 3. Fix per il logo FICUP
             const ficupLogoTop = clonedDoc.querySelector('.ficup-logo-top img');
             if(ficupLogoTop) {
                 ficupLogoTop.style.height = '35px';
@@ -966,6 +1052,16 @@ async function downloadMatchCard() {
             if(scoreBox) {
                 scoreBox.style.display = 'flex';
                 scoreBox.style.alignItems = 'center';
+            }
+
+            // --- NUOVO PUNTO 5: FIX ZIG-ZAG PER DOWNLOAD ---
+            const bgH = clonedDoc.getElementById('bgH');
+            if(bgH) {
+                bgH.style.clipPath = 'polygon(0% 0%, 100% 0%, 85% 33%, 100% 66%, 85% 100%, 0% 100%)';
+                bgH.style.webkitClipPath = 'polygon(0% 0%, 100% 0%, 85% 33%, 100% 66%, 85% 100%, 0% 100%)';
+                // Assicuriamoci che il margine negativo del secondo colore sia applicato
+                const bgA = clonedDoc.getElementById('bgA');
+                if(bgA) bgA.style.marginLeft = '-20%';
             }
         }
     }).then(canvas => {
@@ -1115,12 +1211,30 @@ function setVotoSpeciale(label, cardClass, bannerColor) {
 
 // 1. DATABASE COLORI SQUADRE
 const teamColorsMatch = {
-    "Atalanta": "#005CA9", "Bologna": "#9E1B32", "Cagliari": "#A50034", "Como": "#0054A6",
-    "Cremonese": "#D50032", "Fiorentina": "#5B2C83", "Genoa": "#C4122E", "Inter": "#0068A8",
-    "Juventus": "#000000", "Lazio": "#87CEEB", "Lecce": "#FFD200", "Milan": "#FB090B",
-    "Napoli": "#0081C8", "Parma": "#FFD100", "Pisa": "#0054A6", "Roma": "#8E1F2F",
-    "Sassuolo": "#00A651", "Torino": "#800000", "Udinese": "#000000", "Verona": "#0033A0"
+    "Atalanta": { top: "#005CA9", bottom: "#003366" },
+    "Bologna": { top: "#9E1B32", bottom: "#580F1C" },
+    "Cagliari": { top: "#A50034", bottom: "#5F001E" },
+    "Como": { top: "#0054A6", bottom: "#003366" },
+    "Fiorentina": { top: "#5B2C83", bottom: "#2D1641" },
+    "Genoa": { top: "#C4122E", bottom: "#6A0A19" },
+    "Inter": { top: "#0068A8", bottom: "#00314F" },
+    "Juventus": { top: "#333333", bottom: "#000000" },
+    "Lazio": { top: "#87CEEB", bottom: "#4FA3C4" },
+    "Lecce": { top: "#FFD200", bottom: "#E60026" }, // Giallorosso
+    "Milan": { top: "#FB090B", bottom: "#7A0405" },
+    "Napoli": { top: "#0081C8", bottom: "#004B75" },
+    "Parma": { top: "#FFD100", bottom: "#C4A100" },
+    "Pisa": { top: "#0054A6", bottom: "#000000" },
+
+    "Roma": { top: "#8E1F2F", bottom: "#5F151F" },
+    "Sassuolo": { top: "#00A651", bottom: "#005C2D" },
+    "Torino": { top: "#800000", bottom: "#4D0000" },
+    "Udinese": { top: "#222222", bottom: "#000000" },
+    "Cremonese": { top: "#C2C2C2", bottom: "#B30000" },
+
+    "Verona": { top: "#0033A0", bottom: "#001A52" }
 };
+
 
 // 2. FUNZIONE PRINCIPALE DI AGGIORNAMENTO
 window.updateMatch = function() {
@@ -1147,15 +1261,29 @@ window.updateMatch = function() {
         outBanner.innerText = inputBanner.value || "FINAL RESULT";
     }
 
-    // AGGIORNAMENTO COLORI E LOGHI
+    // AGGIORNAMENTO COLORI E LOGHI (Con Gradienti Reali)
     if(h && teamColorsMatch[h]) {
-        document.getElementById('bgH').style.backgroundColor = teamColorsMatch[h];
+        const colorData = teamColorsMatch[h];
+        // Se hai usato l'oggetto con top e bottom:
+        if (typeof colorData === 'object') {
+            document.getElementById('bgH').style.background = `linear-gradient(180deg, ${colorData.top} 0%, ${colorData.bottom} 100%)`;
+        } else {
+            // Se usi ancora i colori singoli come backup
+            document.getElementById('bgH').style.backgroundColor = colorData;
+        }
         document.getElementById('imgH').src = teamLogos[h];
     }
+
     if(a && teamColorsMatch[a]) {
-        document.getElementById('bgA').style.backgroundColor = teamColorsMatch[a];
+        const colorData = teamColorsMatch[a];
+        if (typeof colorData === 'object') {
+            document.getElementById('bgA').style.background = `linear-gradient(180deg, ${colorData.top} 0%, ${colorData.bottom} 100%)`;
+        } else {
+            document.getElementById('bgA').style.backgroundColor = colorData;
+        }
         document.getElementById('imgA').src = teamLogos[a];
     }
+
 
     // VISIBILITÀ LABEL "PRONOSTICO CONSIGLIATO"
     const pLabel = document.getElementById('pLabel');
