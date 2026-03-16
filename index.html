@@ -726,6 +726,9 @@
             "Sassuolo":"https://i.ibb.co/Xrj8PYjx/Ussassuolostemma-svg.png",
             "Torino":"https://i.ibb.co/v62Bw8qY/Torino-FC-logo-svg.png",
             "Udinese":"https://i.ibb.co/5xhRTYmp/Logo-Udinese-Calcio-svg.png",
+                     
+            "Catanzaro": "https://i.ibb.co/WNKDsLHy/catanzaro.png",
+ 
             "Verona":"https://i.ibb.co/k6yWJsZf/Hellas-Verona-FC-logo-2020-svg.png"
         };
 
@@ -979,6 +982,7 @@ async function downloadMatchCard() {
         onclone: (clonedDoc) => {
             // FIX PROPORZIONI LOGHI MATCH CARD (Logica identica alla prima card)
             
+            
             // 1. Sistemiamo i cerchi bianchi (logo-circle-match)
             const containers = clonedDoc.querySelectorAll('.logo-circle-match');
             containers.forEach(c => {
@@ -1012,6 +1016,7 @@ async function downloadMatchCard() {
                 ficupLogoTop.style.margin = '0 auto';
                 ficupLogoTop.style.display = 'block';
             }
+            
 
             // 4. Assicuriamoci che la scoreboard sia visibile
             const scoreBox = clonedDoc.getElementById('scoreBox');
@@ -1019,6 +1024,7 @@ async function downloadMatchCard() {
                 scoreBox.style.display = 'flex';
                 scoreBox.style.alignItems = 'center';
             }
+            
         }
     }).then(canvas => {
         const link = document.createElement('a');
