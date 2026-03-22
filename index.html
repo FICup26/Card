@@ -579,7 +579,10 @@
                 <button onclick="updateStats('-0.5', 'AMMONITO', '#fbbf24')" class="bg-yellow-400 text-black py-2 rounded font-black text-xs">-0.5 (AMM)</button>
                 <button onclick="updateStats('-1', 'ESPULSO', '#ef4444')" class="bg-red-600 py-2 rounded font-black text-xs">-1 (ESP)</button>
                 <button onclick="updateStats('-2', 'AUTOGOL', '#7f1d1d')" class="bg-red-900 py-2 rounded font-black text-xs">-2 (AUT)</button>
+                <button onclick="updateStats('-3', 'RIGORE SBAGLIATO', '#7f1d1d')" class="bg-red-900 py-2 rounded font-black text-xs">-3 (RS)</button>
                 
+                <button onclick="updateStats('+3', 'RIGORE PARATO', '#7f1d1d')" class="bg-red-900 py-2 rounded font-black text-[7px]">+3 (RP)</button>
+
 <button onclick="setCardStatus('CONSIGLIATO', 'card-green')" class="bg-green-500 text-white py-2 rounded font-black text-xs">👍 CONSIGLIATO</button>
 <button onclick="setCardStatus('SCONSIGLIATO', 'card-red')" class="bg-red-600 text-white py-2 rounded font-black text-xs">👎 SCONSIGL. </button>
 
@@ -731,14 +734,52 @@
                      
             "Catanzaro": "https://i.ibb.co/WNKDsLHy/catanzaro.png",
             
-            
+   "Spezia": "https://i.ibb.co/PGLKsGNZ/spezia-2025-b.png",
+         "Monza": "https://i.ibb.co/WdQCGpq/monza.png",
+
+
+"Venezia": { top: "#f97316", bottom: "#065f46" },
+
+         "Cesena": "https://i.ibb.co/9f5LMMv/cesena.png",
+
             "Benevento": "https://i.ibb.co/Q7BzG0Rj/Benevento-Calcio-svg.png",
 
  "Vicenza": "https://i.ibb.co/CsnVjPyw/Logo-LR-Vicenza-Virtus-2018.png",
  
 "Pescara": "https://i.ibb.co/6CYyzmx/pescara-calcio-logo-png-seeklogo-107887-1.png",
 
+"Padova": "https://i.ibb.co/7t99BMX9/padova.png",
 
+"Palermo": "https://i.ibb.co/mCjsJXtc/palermo.png",
+
+"Juve Stabia": "https://i.ibb.co/5W56hFW7/juve-stabia-scuro.png",
+
+"Sampdoria": "https://i.ibb.co/3yHr93HP/sampdoria.png",
+
+"Avellino": "https://i.ibb.co/8LYHV24k/avellino.png",
+
+"Bari": "https://i.ibb.co/DPXzCpby/bari.png",
+
+"Virtus Entella": "https://i.ibb.co/W4pfw4Dw/entella.png",
+
+"Venezia": "https://i.ibb.co/p6bRsP8S/venezia.png",
+
+
+"Reggiana": "https://i.ibb.co/dwJGM5Qn/reggiana-2025.png",
+
+
+"Carrarese": "https://i.ibb.co/ds9HG0rs/carrarese.png",
+
+"Mantova": "https://i.ibb.co/pjnfvcjr/mantova.png",
+
+"Südtirol": "https://i.ibb.co/27kq705m/sudtirol.png",
+
+"Frosinone": "https://i.ibb.co/nqms2T3x/frosinone.png",
+
+"Empoli": "https://i.ibb.co/p6wJrjMX/empoli.png",
+
+"Modena": "https://i.ibb.co/QjH1xQv9/modena-blu-b.png",
+"Mantova": { top: "#ffffff", bottom: "#e2001a" },
 
             "Verona":"https://i.ibb.co/k6yWJsZf/Hellas-Verona-FC-logo-2020-svg.png"
         };
@@ -1143,6 +1184,12 @@ function updateStats(val, label, color, specialClass = null) {
         valEl.style.fontSize = "3rem";
         valEl.style.top = "35px";
     }
+    
+    
+   // 3. Fix per le scritte lunghe (Rigori)
+    if(label === 'RIGORE PARATO' || label === 'RIGORE SBAGLIATO') {
+        labelEl.style.fontSize = "1.0rem"; // Ho messo 1.3 così entra bene anche "Sbagliato"
+    }
 }
 
 
@@ -1204,6 +1251,51 @@ const teamColorsMatch = {
     "Torino": { top: "#800000", bottom: "#4D0000" },
     "Udinese": { top: "#222222", bottom: "#000000" },
     "Cremonese": { top: "#C2C2C2", bottom: "#B30000" },
+    
+    "Padova": { top: "#ffffff", bottom: "#cc0000" },
+    
+    "Pescara": { top: "#ffffff", bottom: "#0091d3" },
+
+"Catanzaro": { top: "#FFD700", bottom: "#C21E2C" },
+
+"Palermo": { top: "#f5a9bc", bottom: "#000000" },
+
+"Juve Stabia": { top: "#facc15", bottom: "#1e3a8a" },
+
+"Spezia": { top: "#ffffff", bottom: "#000000" },
+
+"Carrarese": { top: "#facc15", bottom: "#1e3a8a" },
+
+"Sampdoria": { top: "#005ca9", bottom: "#ffffff" },
+
+"Avellino": { top: "#ffffff", bottom: "#008751" },
+
+"Virtus Entella": { top: "#ffffff", bottom: "#0ea5e9" },
+
+
+"Cesena": { top: "#ffffff", bottom: "#000000" },
+
+"Monza": { top: "#ffffff", bottom: "#e30613" },
+
+"Venezia": { top: "#f97316", bottom: "#065f46" },
+
+"Reggiana": { top: "#ffffff", bottom: "#7b1c2b" },
+
+
+"Empoli": { top: "#ffffff", bottom: "#005ca9" },
+
+"Bari": { top: "#ffffff", bottom: "#e30613" },
+
+"Venezia": { top: "#f97316", bottom: "#065f46" },
+
+
+
+"Modena": { top: "#ffed00", bottom: "#005ca9" },
+
+"Südtirol": { top: "#ffffff", bottom: "#e2001a" },
+
+"Frosinone": { top: "#ffed00", bottom: "#005ca9" },
+
 
     "Verona": { top: "#0033A0", bottom: "#001A52" }
 };
