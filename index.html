@@ -538,6 +538,80 @@
     box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
 }
 
+/* Stile per il Punto Interrogativo Mystery */
+.mystery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: all 0.5s ease-in-out;
+}
+
+.mystery-q {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10rem;
+    font-weight: 900;
+    color: #3b82f6;
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    animation: mystery-bounce 1.5s infinite ease-in-out;
+}
+
+@keyframes mystery-bounce {
+    0%, 100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.1); filter: brightness(1.5); }
+}
+
+/* Quando svelato, l'overlay sparisce con un lampo */
+.mystery-reveal {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.5);
+}
+
+
+/* Animazione Caricamento durante il press */
+@keyframes mystery-charging {
+    0% { transform: scale(1); filter: brightness(1); }
+    100% { transform: scale(1.2); filter: brightness(2) drop-shadow(0 0 30px #3b82f6); }
+}
+
+.mystery-charging {
+    animation: mystery-charging 1.5s forwards ease-in;
+}
+
+/* Particelle Esplosione */
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #fbbf24;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 110;
+}
+
+/* Stile per il testo di istruzione */
+.mystery-instruction {
+    font-family: 'Montserrat', sans-serif;
+    color: #3b82f6;
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-top: 10px;
+    letter-spacing: 1px;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
 
     </style>
 </head>
@@ -558,6 +632,8 @@
                 
     <button onclick="activateMOTM()" class="bg-yellow-500 text-black py-2 rounded font-black text-xs col-span-3 mt-1">⭐ PLAYER OF THE MATCH</button>
     
+    <button onclick="updateStats('', 'GOOOL!', '#22c55e')" class="bg-green-500 py-2 rounded font-black text-xs border-2 border-white">⚽ SOLO GOOOL</button>
+    
     <button onclick="updateStats('-1', 'GOL SUBITO', '#0f172a', 'card-dark')" class="bg-slate-700 text-white py-2 rounded font-black text-[10px]">-1 GOL</button>
     <button onclick="updateStats('-2', 'GOL SUBITI', '#0f172a', 'card-dark')" class="bg-slate-700 text-white py-2 rounded font-black text-[10px]">-2 GOL</button>
     <button onclick="updateStats('-3', 'GOL SUBITI', '#0f172a', 'card-dark')" class="bg-slate-700 text-white py-2 rounded font-black text-[10px]">-3 GOL</button>
@@ -569,9 +645,12 @@
 <button onclick="setSqualificato()" class="bg-red-700 text-white py-2 rounded font-black text-xs">🚫 SQUALIFICATO</button>
 <button onclick="setSenzaVoto()" class="bg-slate-400 text-white py-2 rounded font-black text-xs">⚪ S.V.</button>
 
+
            
                 
                 <button onclick="updateStats('+6', 'DOPPIETTA', '#16a34a')" class="bg-green-700 py-2 rounded font-black text-xs">+6 (GOL)</button>
+                <button onclick="updateStats('+9', 'TRIPLETTA', '#16a34a')" class="bg-green-700 py-2 rounded font-black text-xs">+9 (GOL)</button>
+                
                 <button onclick="updateStats('+1', 'ASSIST', '#3b82f6')" class="bg-blue-600 py-2 rounded font-black text-xs">+1 (ASST)</button>
                 <button onclick="updateStats('+2', 'ASSIST', '#3b82f6')" class="bg-blue-600 py-2 rounded font-black text-xs">+2 (ASST)</button>
                 <button onclick="updateStats('+3', 'ASSIST', '#3b82f6')" class="bg-blue-600 py-2 rounded font-black text-xs">+3 (ASST)</button>
@@ -589,9 +668,13 @@
 <button onclick="setPercentage('CLEAN SHEET')" class="bg-blue-400 text-white py-2 rounded font-black text-xs">🧤 % CLEAN SHEET</button>
 <button onclick="setPercentage('SEGNA')" class="bg-purple-500 text-white py-2 rounded font-black text-xs">⚽ % SEGNA</button>
 <button onclick="setVotoSpeciale('DISASTRO', 'card-disastro', '#000')" class="bg-purple-950 text-white py-3 rounded font-black text-xs uppercase italic">💀 DISASTRO (Voto)</button>
-    <button onclick="setVotoSpeciale('TOP PLAYER', 'card-top', '#fff')" class="bg-sky-300 text-blue-900 py-3 rounded font-black text-xs uppercase italic">💎 TOP VOTO (Voto)</button>
+    <button onclick="setVotoSpeciale('TOP PLAYER', 'card-top', '#fff')" 
+        class="bg-sky-300 text-blue-900 py-3 rounded font-black text-xs uppercase italic">
+        💎 TOP VOTO (Voto)
+</button>
     
     <button onclick="setLegend()" class="bg-gradient-to-r from-yellow-800 via-yellow-400 to-yellow-800 text-black py-2 rounded font-black text-xs col-span-3 mt-1 border border-yellow-200 shadow-inner">🏆 LEGEND MODE</button>
+<button onclick="activateMysteryCard()" class="bg-purple-600 text-white py-2 rounded font-black text-xs col-span-3 mt-1 animate-pulse">❓ MYSTERY TOP PLAYER</button>
 
 
 <button onclick="downloadCard()" class="bg-blue-500 text-white py-2 rounded font-black text-xs col-span-2 uppercase italic">Salva Immagine</button>
@@ -635,6 +718,156 @@
         <span id="team-name" class="team-info">CALCIATORE</span>
     </div>
 </div>
+
+
+<div class="console-container w-full max-w-sm mx-auto mt-10">
+    <h3 class="text-white font-black mb-4 text-center">EDITOR TOP 5 SETTIMANA</h3>
+    <div class="grid grid-cols-1 gap-2">
+        <input type="text" id="topTitle" placeholder="TITOLO (es. TOP CLEAN SHEET)" oninput="updateTopFive()" class="bg-slate-900 text-white p-2 text-sm border border-blue-500">
+        <div id="topFiveInputs" class="space-y-2">
+            </div>
+        <button onclick="downloadTopFiveCard()" class="bg-fuchsia-600 text-white py-3 rounded font-black text-xs uppercase italic mt-2 shadow-lg">Salva Top 5 Card</button>
+    </div>
+</div>
+
+<div class="top-five-card" id="topFiveCard">
+    <div class="top-header">
+        <span class="header-small"> </span>
+        <span id="displayTopTitle" class="header-main">DELLA SETTIMANA</span>
+    </div>
+
+    <div class="list-container" id="listContainer">
+        </div>
+
+    <div class="footer-brand">
+        <img src="https://i.ibb.co/N6bzMRw3/1770317621369.png" class="footer-logo">
+    </div>
+</div>
+
+<style>
+    .top-five-card {
+        width: 320px;
+        height: 540px;
+        background: radial-gradient(circle at 50% 50%, #6d28d9 0%, #4c1d95 100%);
+        border-radius: 15px;
+        position: relative;
+        overflow: hidden;
+        padding: 20px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .top-header {
+        text-align: center;
+        margin-bottom: 20px;
+        border-bottom: 2px solid rgba(255,255,255,0.2);
+        padding-bottom: 10px;
+    }
+
+    .header-small {
+        display: block;
+        color: #ddd;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+
+    .header-main {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 900;
+        font-size: 1.4rem;
+        color: white;
+        text-transform: uppercase;
+    }
+
+    .rank-row {
+        display: flex;
+        align-items: center;
+        background: rgba(255,255,255,0.1);
+        margin-bottom: 10px;
+        border-radius: 50px 10px 10px 50px;
+        height: 65px;
+        position: relative;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .rank-number {
+        width: 40px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 900;
+        font-size: 1.8rem;
+        color: rgba(255,255,255,0.3);
+        margin-left: 10px;
+    }
+
+    .player-circle {
+        width: 55px;
+        height: 55px;
+        background: #fff;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #fff;
+        margin-right: 12px;
+    }
+
+    .player-circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .player-info {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .p-name {
+        color: white;
+        font-weight: 900;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        line-height: 1;
+    }
+
+    .p-team-val {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 4px;
+        padding-right: 15px;
+    }
+
+    .p-team {
+        color: #a78bfa;
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .p-stat {
+        background: #fff;
+        color: #4c1d95;
+        font-weight: 900;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+
+    .footer-brand {
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        left: 0;
+        text-align: center;
+    }
+
+    .footer-logo {
+        height: 25px;
+        margin: 0 auto;
+        opacity: 0.8;
+    }
+    
+</style>
 
 <div class="console-container w-full max-w-sm mx-auto">
     <div class="grid grid-cols-2 gap-2">
@@ -706,7 +939,10 @@
     <div style="position: relative;">
         <span id="txtDisplay">FINAL RESULT</span>
     </div>
+    
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/RecordRTC/5.6.2/RecordRTC.js"></script>
 
 
     <script>
@@ -728,8 +964,6 @@
             "Parma":"https://i.ibb.co/bgMLjHdf/Logo-Parma-Calcio-1913-adozione-2016-svg.png",
             "Pisa":"https://i.ibb.co/35bNsCSV/Logo-Pisa-SC-2017-svg.png",
             "Roma":"https://i.ibb.co/rRkxM7Bf/AS-Roma-Logo-2017-svg-1.png",
-
-"Italia": "https://i.ibb.co/ksNmFLfF/Logo-Italy-National-Football-Team-2023-svg-1.png",
             "Sassuolo":"https://i.ibb.co/Xrj8PYjx/Ussassuolostemma-svg.png",
             "Torino":"https://i.ibb.co/v62Bw8qY/Torino-FC-logo-svg.png",
             "Udinese":"https://i.ibb.co/5xhRTYmp/Logo-Udinese-Calcio-svg.png",
@@ -781,7 +1015,9 @@
 "Empoli": "https://i.ibb.co/p6wJrjMX/empoli.png",
 
 "Modena": "https://i.ibb.co/QjH1xQv9/modena-blu-b.png",
-"Mantova": { top: "#ffffff", bottom: "#e2001a" },
+"Italia": "https://i.ibb.co/ksNmFLfF/Logo-Italy-National-Football-Team-2023-svg-1.png",
+
+
 
             "Verona":"https://i.ibb.co/k6yWJsZf/Hellas-Verona-FC-logo-2020-svg.png"
         };
@@ -893,6 +1129,7 @@ const scriptCanvas = document.createElement('script');
 scriptCanvas.src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js";
 document.head.appendChild(scriptCanvas);
 
+
 function activateMOTM() {
     const card = document.getElementById('card');
     const valEl = document.getElementById('stat-val');
@@ -913,35 +1150,7 @@ function activateMOTM() {
 }
 
 
-function updateStats(val, label, color, specialClass = null) {
-    const card = document.getElementById('card');
-    const valEl = document.getElementById('stat-val');
-    const labelEl = document.getElementById('event-label');
-    const bannerEl = document.getElementById('banner-bg');
-    const paniniImg = document.getElementById('panini-stat-img');
 
-    // 1. RESET TOTALE
-    card.className = "card-container"; 
-    if(specialClass) card.classList.add(specialClass);
-    
-    valEl.className = "bonus-value"; 
-    valEl.style.color = "white"; 
-    valEl.innerHTML = val; 
-    
-    // RESET DIMENSIONI (Fondamentale per pulire i residui di % o SV)
-    valEl.style.fontSize = "5.5rem"; 
-    valEl.style.top = "10px";
-    valEl.style.letterSpacing = "-4px";
-    
-    paniniImg.style.display = 'none';
-    valEl.style.display = 'block';
-    
-    // 2. APPLICA NUOVI DATI
-    labelEl.innerText = label;
-    labelEl.style.fontSize = "1.5rem"; // Reset dimensione font banner
-    labelEl.style.color = (specialClass === 'card-top') ? "#001a4d" : "white";
-    bannerEl.style.background = color;
-}
 
 
 function setOutStatus() {
@@ -1274,6 +1483,7 @@ const teamColorsMatch = {
 
 "Virtus Entella": { top: "#ffffff", bottom: "#0ea5e9" },
 
+"Mantova": { top: "#ffffff", bottom: "#e2001a" },
 
 "Cesena": { top: "#ffffff", bottom: "#000000" },
 
@@ -1413,6 +1623,327 @@ function avvioGlobale() {
         });
     }
 }
+
+// Inizializzazione Slot Top 5
+function setupTopFive() {
+    const container = document.getElementById('topFiveInputs');
+    container.innerHTML = ""; // Pulisce il contenitore
+    for (let i = 1; i <= 5; i++) {
+        container.innerHTML += `
+            <div class="bg-slate-800 p-2 rounded relative">
+                <div class="grid grid-cols-3 gap-1">
+                    <input type="text" id="tName${i}" placeholder="Nome ${i}" 
+                           oninput="suggestTopName(${i})" 
+                           class="bg-slate-900 text-white text-[10px] p-1 rounded border border-slate-700">
+                    <input type="text" id="tStat${i}" placeholder="Stat (es. 85%)" 
+                           oninput="updateTopFive()" 
+                           class="bg-slate-900 text-white text-[10px] p-1 rounded border border-slate-700">
+                    <select id="tTeam${i}" onchange="updateTopFive()" 
+                            class="bg-slate-900 text-white text-[10px] p-1 rounded border border-slate-700"></select>
+                </div>
+                <div id="suggest${i}" class="hidden absolute left-0 right-0 top-full bg-slate-700 z-[100] rounded-b shadow-xl max-h-32 overflow-y-auto border border-blue-500"></div>
+            </div>
+        `;
+    }
+    
+    setTimeout(() => {
+        for (let i = 1; i <= 5; i++) {
+            const sel = document.getElementById(`tTeam${i}`);
+            sel.add(new Option("SQUADRA", ""));
+            Object.keys(teamLogos).sort().forEach(t => sel.add(new Option(t, t)));
+        }
+    }, 500);
+}
+
+function updateTopFive() {
+    const title = document.getElementById('topTitle').value;
+    const displayTitle = document.getElementById('displayTopTitle');
+    if (displayTitle) displayTitle.innerText = title || "DELLA SETTIMANA";
+    
+    const list = document.getElementById('listContainer');
+    list.innerHTML = "";
+
+    for (let i = 1; i <= 5; i++) {
+        const nameInput = document.getElementById(`tName${i}`).value.trim();
+        const stat = document.getElementById(`tStat${i}`).value || "0.0";
+        const team = document.getElementById(`tTeam${i}`).value;
+        
+        let photo = "https://i.ibb.co/3pY84zL/default-avatar.png"; 
+        
+        if (nameInput.length >= 2) {
+            // CERCA MATCH: Prima prova match esatto, poi il "include"
+            const pData = database.find(p => p.nome.toLowerCase().trim() === nameInput.toLowerCase()) || 
+                          database.find(p => p.nome.toLowerCase().trim().includes(nameInput.toLowerCase()));
+            
+            if (pData && pData.foto) {
+                photo = pData.foto;
+            }
+        }
+
+        list.innerHTML += `
+            <div class="rank-row">
+                <div class="rank-number">${i}</div>
+                <div class="player-circle">
+                    <img src="${photo}" style="width:100%; height:100%; object-fit:cover;" 
+                         onerror="this.src='https://i.ibb.co/3pY84zL/default-avatar.png'">
+                </div>
+                <div class="player-info">
+                    <div class="p-name">${nameInput.toUpperCase() || 'CALCIATORE'}</div>
+                    <div class="p-team-val">
+                        <span class="p-team">${team || 'Serie A'}</span>
+                        <span class="p-stat">${stat}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function suggestTopName(index) {
+    const input = document.getElementById(`tName${index}`);
+    const suggestBox = document.getElementById(`suggest${index}`);
+    const val = input.value.toLowerCase().trim();
+
+    suggestBox.innerHTML = '';
+    
+    if (val.length < 2) {
+        suggestBox.classList.add('hidden');
+        updateTopFive();
+        return;
+    }
+
+    const matches = database.filter(p => p.nome.toLowerCase().includes(val)).slice(0, 5);
+
+    if (matches.length > 0) {
+        suggestBox.classList.remove('hidden');
+        matches.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'p-1 hover:bg-blue-600 cursor-pointer text-[10px] text-white border-b border-slate-600';
+            div.innerHTML = `<strong>${p.nome}</strong> <span class="opacity-70">(${p.squadra})</span>`;
+            div.onclick = () => {
+                input.value = p.nome.toUpperCase();
+                // Autocompila la squadra se presente nel menu a tendina
+                const teamSelect = document.getElementById(`tTeam${index}`);
+                if (teamSelect) teamSelect.value = p.squadra;
+                
+                suggestBox.classList.add('hidden');
+                updateTopFive(); // Aggiorna l'anteprima della card
+            };
+            suggestBox.appendChild(div);
+        });
+    } else {
+        suggestBox.classList.add('hidden');
+    }
+    updateTopFive();
+}
+
+async function downloadTopFiveCard() {
+    const el = document.getElementById('topFiveCard');
+    const btn = event.target;
+    btn.innerText = "GENERAZIONE...";
+
+    await document.fonts.ready;
+
+    html2canvas(el, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null,
+        onclone: (clonedDoc) => {
+
+            // ✅ FIX CERCHI PLAYER
+            const circles = clonedDoc.querySelectorAll('.player-circle');
+            circles.forEach(c => {
+                c.style.width = '55px';
+                c.style.height = '55px';
+                c.style.display = 'flex';
+                c.style.alignItems = 'center';
+                c.style.justifyContent = 'center';
+                c.style.overflow = 'hidden';
+            });
+
+            // ✅ FIX IMMAGINI PLAYER
+            const imgs = clonedDoc.querySelectorAll('.player-circle img');
+            imgs.forEach(i => {
+                i.style.width = '100%';
+                i.style.height = '100%';
+                i.style.objectFit = 'cover';
+                i.style.display = 'block';
+            });
+
+            // ✅ FIX TESTI (evita shift)
+            const names = clonedDoc.querySelectorAll('.p-name');
+            names.forEach(n => {
+                n.style.lineHeight = '1';
+                n.style.whiteSpace = 'nowrap';
+            });
+
+            // ✅ FIX ROW ALIGNMENT
+            const rows = clonedDoc.querySelectorAll('.rank-row');
+            rows.forEach(r => {
+                r.style.display = 'flex';
+                r.style.alignItems = 'center';
+            });
+
+            // ✅ FIX STAT BOX
+            const stats = clonedDoc.querySelectorAll('.p-stat');
+            stats.forEach(s => {
+                s.style.display = 'inline-block';
+            });
+
+            // ✅ FIX LOGO FOOTER
+            const logo = clonedDoc.querySelector('.footer-logo');
+            if (logo) {
+                logo.style.height = '25px';
+                logo.style.width = 'auto';
+            }
+        }
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `Top5_Fanta_Consigliati.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        btn.innerText = "Salva Top 5 Card";
+    }).catch(err => {
+        console.error(err);
+        btn.innerText = "ERRORE";
+    });
+}
+
+// Chiama setupTopFive dentro la tua funzione avvioGlobale esistente
+const originalAvvio = avvioGlobale;
+avvioGlobale = function() {
+    originalAvvio();
+    setupTopFive();
+};
+// Funzione per preparare la Mystery Card
+let mysteryTimer;
+
+function activateMysteryCard() {
+    fullReset();
+    const card = document.getElementById('card');
+    
+    // Personalizzazione Testo
+    const customText = prompt("Inserisci il testo della Mystery (es: IL SUPER CONSIGLIO È...)", "IL SUPER CONSIGLIO È...");
+    if (customText === null) return;
+
+    let overlay = document.getElementById('mystery-overlay');
+    if (overlay) overlay.remove();
+
+    overlay = document.createElement('div');
+    overlay.id = 'mystery-overlay';
+    overlay.className = 'mystery-overlay flex-col cursor-pointer select-none';
+    overlay.innerHTML = `
+        <div style="font-family:'Montserrat'; font-weight:900; color:white; font-size:1.1rem; margin-bottom:10px; text-transform:uppercase; text-align:center; padding:0 20px;">
+            ${customText}
+        </div>
+        <div class="mystery-q" id="mystery-q">?</div>
+        <div class="mystery-instruction">TIENI PREMUTO</div>
+    `;
+    card.appendChild(overlay);
+
+    // Eventi Mouse / Touch
+    overlay.onmousedown = startMysteryPress;
+    overlay.onmouseup = cancelMysteryPress;
+    overlay.ontouchstart = startMysteryPress;
+    overlay.ontouchend = cancelMysteryPress;
+    
+    document.getElementById('banner-bg').style.display = 'none';
+    document.getElementById('stat-val').style.display = 'none';
+    document.getElementById('panini-stat-img').style.display = 'none';
+}
+
+function startMysteryPress() {
+    const q = document.getElementById('mystery-q');
+    if (!q) return; // Se per qualche motivo l'elemento è sparito, esci
+    
+    q.classList.add('mystery-charging');
+    
+    mysteryTimer = setTimeout(() => {
+        createExplosion();
+        revealMystery();
+    }, 1200);
+}
+
+
+function cancelMysteryPress() {
+    const q = document.getElementById('mystery-q');
+    // Il controllo "if (q)" evita l'errore se l'elemento non esiste più
+    if (q) {
+        q.classList.remove('mystery-charging');
+    }
+    clearTimeout(mysteryTimer);
+}
+
+
+function revealMystery() {
+    const overlay = document.getElementById('mystery-overlay');
+    const card = document.getElementById('card');
+    if (!overlay) return;
+
+    overlay.classList.add('mystery-reveal');
+    card.classList.add('card-gold');
+
+    // Riattiviamo il banner con i dati finali
+    const banner = document.getElementById('banner-bg');
+    banner.style.display = 'block';
+    banner.style.background = "#000";
+    document.getElementById('event-label').innerText = "LA SCOMMESSA";
+    document.getElementById('event-label').style.fontSize = "1.5rem";
+    
+    // Niente Panini
+    document.getElementById('panini-stat-img').style.display = 'none';
+
+    // CREAZIONE STELLE
+    const starContainer = document.createElement('div');
+    starContainer.className = 'star-container';
+    for (let i = 0; i < 22; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 85}%`;
+        const size = 15 + Math.random() * 15;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.setProperty('--duration', `${0.8 + Math.random() * 1.2}s`);
+        starContainer.appendChild(star);
+    }
+    card.appendChild(starContainer);
+
+    setTimeout(() => { if(overlay) overlay.remove(); }, 600);
+}
+function createExplosion() {
+    const card = document.getElementById('card');
+    const rect = card.getBoundingClientRect();
+    const centerX = 160; // Centro della card (320px / 2)
+    const centerY = 230; // Centro della card (460px / 2)
+
+    for (let i = 0; i < 40; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        card.appendChild(p);
+
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 5 + Math.random() * 10;
+        const tx = Math.cos(angle) * 200;
+        const ty = Math.sin(angle) * 200;
+
+        p.style.left = centerX + 'px';
+        p.style.top = centerY + 'px';
+        p.style.background = ['#fff', '#fbbf24', '#3b82f6'][Math.floor(Math.random() * 3)];
+
+        const anim = p.animate([
+            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+            { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+        ], {
+            duration: 800 + Math.random() * 400,
+            easing: 'cubic-bezier(0, .9, .57, 1)'
+        });
+
+        anim.onfinish = () => p.remove();
+    }
+}
+
+
 
 // Lancia tutto al caricamento della pagina
 window.onload = avvioGlobale;
